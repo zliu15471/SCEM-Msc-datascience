@@ -59,4 +59,41 @@ a|b
 xor(a,b)
 
 
+## function 
+
+is_prime <- function(num){
+  stopifnot(is.numeric(num),num%%1==0,num>=0)
+  t_val <- TRUE
+  if(num<2){
+    t_val <- FALSE}
+    else if(num >2) { 
+    for(i in 2: sqrt(num)) {
+      if(num%%i==0) {
+      t_val <- FALSE
+      break
+      }
+    }
+    }
+  return (t_val)
+}
+
+is_prime(39)
+
+## call_by_value semantics 
+
+a <- seq(5,2)
+demo_func_1 <- function(x) {
+  x[2] <- -10
+  print(x)
+  
+}
+
+demo_func_1(a)
+
+a
+
+
+
+## lazy evaluation
+
 
