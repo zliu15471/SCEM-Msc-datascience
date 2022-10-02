@@ -1,0 +1,28 @@
+---
+title: "My first R markdown Document"
+author: "Zhen Liu"
+date: "2022-10-02"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+you can embed an R code chunk like this:
+
+```{r simple vectors}
+x <- c(3,7,4,2,1,2,-4,-5)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
