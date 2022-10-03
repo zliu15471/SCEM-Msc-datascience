@@ -17,7 +17,7 @@ objects(pattern = "animals")
 ls()
 ls(all.names = FALSE)
 ls(all.names = TRUE)
-ls(,pattern = "animals",all.names = TRUE)
+ls(pattern = "animals",all.names = TRUE)
 
 
 ls(pos =2,pattern = "animals_df",all.names = TRUE)
