@@ -4,8 +4,6 @@ myFirstRFunc <- function(n){
 }
 
 
-
-
 myFirstRFunc(14)
 
 myFirstRFunc(1000)
