@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Create a dataframe in R Markdown
 
 ```{r }
 animals <- c("snake","Ostrich","Cat","Spider")
@@ -19,6 +19,63 @@ animals_df <- data.frame(animals,num_legs)
 
 ```{r}
 print(animals_df)
+```
+
+
+## Maxtrix operations 
+
+```{r}
+x_vect <- c(seq(12,2,by = -2))
+print(x_vect)
+```
+
+```{r}
+M <- matrix(x_vect,2,3)
+print(M)
+```
+
+```{r}
+Y <- matrix(seq(4),2,2)
+print(Y)
+```
+
+```{r}
+Z <- matrix((seq(4,10,by = 2)),2,2)
+print(Z)
+```
+
+```{r}
+t(Y)
+t(Z)
+```
+
+
+### Matrix sums
+
+```{r}
+Y+Z
+Z+Y
+```
+
+### Matrix mutiplication
+
+```{r}
+Y%*%Z
+Z%*%Y
+Y%*%M
+```
+
+### Matrix element-wise multiplication
+```{r}
+Y*Z
+Z*Y
+```
+### Matrix inverse
+
+```{r}
+solve(Y)
+solve(Y)%*%M
+solve(Y,M)
 ```
 
 

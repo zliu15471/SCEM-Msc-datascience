@@ -363,8 +363,8 @@ display: none;
 </div>
 
 
-<div id="r-markdown" class="section level2">
-<h2>R Markdown</h2>
+<div id="create-a-dataframe-in-r-markdown" class="section level2">
+<h2>Create a dataframe in R Markdown</h2>
 <pre class="r"><code>animals &lt;- c(&quot;snake&quot;,&quot;Ostrich&quot;,&quot;Cat&quot;,&quot;Spider&quot;)
 num_legs &lt;- c(0,2,4,8)
 animals_df &lt;- data.frame(animals,num_legs)</code></pre>
@@ -374,6 +374,22 @@ animals_df &lt;- data.frame(animals,num_legs)</code></pre>
 ## 2 Ostrich        2
 ## 3     Cat        4
 ## 4  Spider        8</code></pre>
+</div>
+<div id="maxtrix-operations" class="section level2">
+<h2>Maxtrix operations</h2>
+<pre class="r"><code>x_vect &lt;- c(seq(12,2,by = -2))
+print(x_vect)</code></pre>
+<pre><code>## [1] 12 10  8  6  4  2</code></pre>
+<pre class="r"><code>M &lt;- matrix(x_vect,2,3)
+print(M)</code></pre>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]   12    8    4
+## [2,]   10    6    2</code></pre>
+<pre class="r"><code>Y &lt;- matrix(seq(4),2,2)
+print(Y)</code></pre>
+<pre><code>##      [,1] [,2]
+## [1,]    1    3
+## [2,]    2    4</code></pre>
 </div>
 
 
