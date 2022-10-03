@@ -1,0 +1,24 @@
+---
+title: "MyFirstRMarkdown"
+author: "Zhen Liu"
+date: "2022-10-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r }
+animals <- c("snake","Ostrich","Cat","Spider")
+num_legs <- c(0,2,4,8)
+animals_df <- data.frame(animals,num_legs)
+```
+
+```{r}
+print(animals_df)
+```
+
+
