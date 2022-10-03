@@ -6,3 +6,6 @@ num_legs
 
 animals_df <- data.frame(animals,num_legs)
 animals_df
+
+
+
