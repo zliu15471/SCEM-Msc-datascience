@@ -67,7 +67,44 @@ hawksFullName<- (hawksFullName%>%select(-Species)%>%rename(Species =species_name
 ```
 #### Q3
 ```{r}
-head(hawksFullName%>%select(Species,Wing,Weight))
+head(hawksFullName%>%select(Species,Wing,Weight),7)
 ```
-##
+### 1.4 The mutate function
+#### Q1 
+\[
+\Bird-BMI: = 1000 × Weight/Wing-span^2.
+\]
+
+```{r}
+hawksWithBMI<- Hawks %>%
+  mutate(bird_BMI = 1000*(Weight/(Wing*Wing)) )%>%
+  select(Species,bird_BMI)%>%
+  arrange(desc(bird_BMI))
+
+head(hawksWithBMI,8)
+```
+
+### 1.5 Summarize and group-by functions
+#### Q1 
+
+
+```{r}
+hawksFullName%>%
+  group_by(Species)%>%
+  summarise(num_rows = n(), mn_wing= mean(Wing),md_wing = median(Wing), t_mn_wing = mean(Wing,trim = 0.1),b_wt_ratio= max(Wing/Tail))
+
+
+
+```
+#### Q2
+
+```{r}
+
+hawksFullName%>%
+  group_by(Species)%>%
+  select(Wing,Weight,Culmen,Hallux,Tail,StandardTail,Tarsus,Crop)%>%
+  summarise(across(everything(),~sum(is.na(.x))))
+
+
+```
 

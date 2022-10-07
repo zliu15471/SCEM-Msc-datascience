@@ -424,14 +424,68 @@ hawksFullName&lt;- (hawksFullName%&gt;%select(-Species)%&gt;%rename(Species =spe
 </div>
 <div id="q3" class="section level4">
 <h4>Q3</h4>
-<pre class="r"><code>head(hawksFullName%&gt;%select(Species,Wing,Weight))</code></pre>
+<pre class="r"><code>head(hawksFullName%&gt;%select(Species,Wing,Weight),7)</code></pre>
 <pre><code>##         Species Wing Weight
 ## 1    Red-tailed  385    920
 ## 2    Red-tailed  376    930
 ## 3    Red-tailed  381    990
 ## 4      Cooper&#39;s  265    470
 ## 5 Sharp-shinned  205    170
-## 6    Red-tailed  412   1090</code></pre>
+## 6    Red-tailed  412   1090
+## 7    Red-tailed  370    960</code></pre>
+</div>
+</div>
+<div id="the-mutate-function" class="section level3">
+<h3>1.4 The mutate function</h3>
+<div id="q1-3" class="section level4">
+<h4>Q1</h4>
+<p><span class="math display">\[
+\Bird-BMI: = 1000 × Weight/Wing-span^2.
+\]</span></p>
+<pre class="r"><code>hawksWithBMI&lt;- Hawks %&gt;%
+  mutate(bird_BMI = 1000*(Weight/(Wing*Wing)) )%&gt;%
+  select(Species,bird_BMI)%&gt;%
+  arrange(desc(bird_BMI))
+
+head(hawksWithBMI,8)</code></pre>
+<pre><code>##   Species  bird_BMI
+## 1      RT 852.69973
+## 2      RT 108.75741
+## 3      RT  32.57493
+## 4      RT  22.72688
+## 5      CH  22.40818
+## 6      RT  19.54932
+## 7      CH  15.21998
+## 8      RT  14.85927</code></pre>
+</div>
+</div>
+<div id="summarize-and-group-by-functions" class="section level3">
+<h3>1.5 Summarize and group-by functions</h3>
+<div id="q1-4" class="section level4">
+<h4>Q1</h4>
+<pre class="r"><code>hawksFullName%&gt;%
+  group_by(Species)%&gt;%
+  summarise(num_rows = n(), mn_wing= mean(Wing),md_wing = median(Wing), t_mn_wing = mean(Wing,trim = 0.1),b_wt_ratio= max(Wing/Tail))</code></pre>
+<pre><code>## # A tibble: 3 × 6
+##   Species       num_rows mn_wing md_wing t_mn_wing b_wt_ratio
+##   &lt;chr&gt;            &lt;int&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+## 1 Cooper&#39;s            70     NA       NA       NA       NA   
+## 2 Red-tailed         577    383.     384      385.       3.16
+## 3 Sharp-shinned      261    185.     191      184.       1.67</code></pre>
+</div>
+<div id="q2-2" class="section level4">
+<h4>Q2</h4>
+<pre class="r"><code>hawksFullName%&gt;%
+  group_by(Species)%&gt;%
+  select(Wing,Weight,Culmen,Hallux,Tail,StandardTail,Tarsus,Crop)%&gt;%
+  summarise(across(everything(),~sum(is.na(.x))))</code></pre>
+<pre><code>## Adding missing grouping variables: `Species`</code></pre>
+<pre><code>## # A tibble: 3 × 9
+##   Species        Wing Weight Culmen Hallux  Tail StandardTail Tarsus  Crop
+##   &lt;chr&gt;         &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt; &lt;int&gt;        &lt;int&gt;  &lt;int&gt; &lt;int&gt;
+## 1 Cooper&#39;s          1      0      0      0     0           19     62    21
+## 2 Red-tailed        0      5      4      3     0          250    538   254
+## 3 Sharp-shinned     0      5      3      3     0           68    233    68</code></pre>
 </div>
 </div>
 </div>
