@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ### 1.1 Select and Filter 
 #### Q1
 ```{r load-packages, include=FALSE}
-library(dplyr)
+library(dplyrlyr)
 library(magrittr)
 library(knitr)
 library(tidyverse)
@@ -105,6 +105,24 @@ hawksFullName%>%
   select(Wing,Weight,Culmen,Hallux,Tail,StandardTail,Tarsus,Crop)%>%
   summarise(across(everything(),~sum(is.na(.x))))
 
+```
+
+## 2. Tidy data and iteration
+### 2.1 Missing data and interation
+#### Q1
+
+```{r}
+impute_by_mean<-function(x){ 
+  mu<-mean(x,na.rm=1) #first compute the mean of x 
+  impute_f<-function(z){ #coordinate-wise imputation
+    if(is.na(z)){ 
+      return(mu)#if z is na replace with mean 
+    }else{ 
+        return(z) #otherwise leave in place
+    }
+  } 
+  return(map_dbl(x,impute_f)) #apply the map function to impute across vector
+}
 
 ```
 
