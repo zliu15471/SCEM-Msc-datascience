@@ -126,3 +126,27 @@ impute_by_mean<-function(x){
 
 ```
 
+for tidyverse library 
+
+#### Q2
+
+```{r}
+impute_by_median <- function(x){
+  mu<-median(x,na.rm=1)
+  impute_f<- function(z){
+    if(is.na(z)){
+      return(mu)
+    }
+    else{
+      return(z)
+    }
+  }
+return(map_dbl(x,impute_f))
+}
+```
+```{r}
+v<- c(1,2,NA,4)
+impute_by_median(v)
+```
+#### Q3
+
