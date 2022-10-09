@@ -156,4 +156,7 @@ y<-c(5*x+1)
 df_xy<- data.frame(x,y)
 df_xy%>%head(5)
 ```
+```{r}
+
+```
 
