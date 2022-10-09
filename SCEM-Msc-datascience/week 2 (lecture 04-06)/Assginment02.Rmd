@@ -150,3 +150,9 @@ impute_by_median(v)
 ```
 #### Q3
 
+```{r}
+x<- c(sequence(1,20))
+
+print(x)
+```
+
