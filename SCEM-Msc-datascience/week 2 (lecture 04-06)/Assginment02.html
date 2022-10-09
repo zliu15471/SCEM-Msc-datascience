@@ -489,6 +489,51 @@ head(hawksWithBMI,8)</code></pre>
 </div>
 </div>
 </div>
+<div id="tidy-data-and-iteration" class="section level2">
+<h2>2. Tidy data and iteration</h2>
+<div id="missing-data-and-interation" class="section level3">
+<h3>2.1 Missing data and interation</h3>
+<div id="q1-5" class="section level4">
+<h4>Q1</h4>
+<pre class="r"><code>impute_by_mean&lt;-function(x){ 
+  mu&lt;-mean(x,na.rm=1) #first compute the mean of x 
+  impute_f&lt;-function(z){ #coordinate-wise imputation
+    if(is.na(z)){ 
+      return(mu)#if z is na replace with mean 
+    }else{ 
+        return(z) #otherwise leave in place
+    }
+  } 
+  return(map_dbl(x,impute_f)) #apply the map function to impute across vector
+}</code></pre>
+<p>for tidyverse library</p>
+</div>
+<div id="q2-3" class="section level4">
+<h4>Q2</h4>
+<pre class="r"><code>impute_by_median &lt;- function(x){
+  mu&lt;-median(x,na.rm=1)
+  impute_f&lt;- function(z){
+    if(is.na(z)){
+      return(mu)
+    }
+    else{
+      return(z)
+    }
+  }
+return(map_dbl(x,impute_f))
+}</code></pre>
+<pre class="r"><code>v&lt;- c(1,2,NA,4)
+impute_by_median(v)</code></pre>
+<pre><code>## [1] 1 2 2 4</code></pre>
+</div>
+<div id="q3-1" class="section level4">
+<h4>Q3</h4>
+<pre class="r"><code>x&lt;- c(sequence(0.1,1,by =0.1 ))
+print(x)</code></pre>
+<pre><code>## integer(0)</code></pre>
+</div>
+</div>
+</div>
 
 
 

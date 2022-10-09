@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ### 1.1 Select and Filter 
 #### Q1
 ```{r load-packages, include=FALSE}
-library(dplyrlyr)
+
 library(magrittr)
 library(knitr)
 library(tidyverse)
@@ -151,8 +151,9 @@ impute_by_median(v)
 #### Q3
 
 ```{r}
-x<- c(sequence(1,20))
-
-print(x)
+x<- c(seq(0,1,by =0.1 ))
+y<-c(5*x+1)
+df_xy<- data.frame(x,y)
+df_xy%>%head(5)
 ```
 
