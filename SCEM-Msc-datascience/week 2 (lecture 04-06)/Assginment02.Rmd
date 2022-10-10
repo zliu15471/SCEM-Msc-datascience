@@ -261,7 +261,7 @@ losses_tidy%>%head(5)
 
 ```{r}
 
-
+# have questions about how to use across
 
 hockey_df<-inner_join(wins_tidy,losses_tidy)
 
@@ -274,7 +274,7 @@ hockey_df_new<-hockey_df%>%
 ####Q4
 
 ```{r}
-
+#have questions about how to use across
 
 #hockey_df_new%>%
   #group_by(Team)%>%
@@ -314,12 +314,15 @@ univar_plot+geom_density(adjust = 2) +ylab('Density')
 ```{r}
 
 
+wins_team<-wins_tidy%>%
+  select(Team,Year,Wins)%>%
+  pivot_wider(names_from = Team,values_from = Wins)
+wins_team
+```
+```{r}
 
+scatter_wins<-ggplot(data = wins_team, aes(y=Eagles,x=Ducks))+ xlab("Ducks")+ylab("Eagles")
 
-
-
-
-
-
+scatter_wins + geom_point(size =3)
 ```
 
