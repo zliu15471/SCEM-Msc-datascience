@@ -158,5 +158,47 @@ df_xy%>%head(5)
 ```
 ```{r}
 
+df_xy%>%
+  mutate(z =map2_dbl(df_xy$x, df_xy$y, sum))
+
+
+
+```
+
+#### Q4
+```{r}
+
+sometimes_missing<-function(index,value){
+  if (index%%5 ==0) {
+    return(NA)
+  }
+ 
+  return(value)
+}
+
+sometimes_missing(15,25)
+
+```
+```{r}
+
+
+
+df_xy_missing<- df_xy%>%
+  mutate(y = map2_dbl(row_number(),df_xy$y,sometimes_missing))
+
+df_xy_missing%>% head(10)
+
+```
+####Q5
+
+```{r}
+
+
+
+df_xy_imputed<-df_xy_missing%>%
+  mutate(y=impute_by_median(df_xy_missing$y))
+  
+df_xy_imputed
+
 ```
 
