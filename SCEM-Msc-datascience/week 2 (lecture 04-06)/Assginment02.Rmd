@@ -93,8 +93,6 @@ hawksFullName%>%
   group_by(Species)%>%
   summarise(num_rows = n(), mn_wing= mean(Wing),md_wing = median(Wing), t_mn_wing = mean(Wing,trim = 0.1),b_wt_ratio= max(Wing/Tail))
 
-
-
 ```
 #### Q2
 
@@ -202,16 +200,96 @@ df_xy_imputed
 
 ```
 ###2.2 Tidying data with pivot functions
+
+
+```{r}
+
+library(readxl) # load the readxl library
+folder_path<-"/Users/zhenliu15471/code/zliu15471/SCEM-Msc-datascience/SCEM-Msc-datascience/"  # set this to the name of the 
+# directory containing "HockeyLeague.xlsx"
+file_name<-"HockeyLeague.xlsx"  # set the file name
+file_path<-paste(folder_path,file_name,sep="") 
+# create the file_path
+wins_data_frame<-read_excel(file_path,sheet="Wins") # read of a sheet from an xl file
+```
+```{r}
+wins_data_frame %>% select(1:5)%>% head(3)
+```
 ####Q1
+
+```{r}
+
+wins_tidy<- wins_data_frame%>%
+  pivot_longer(!1,names_to = 'Year',values_to = "value")%>%
+  separate(value,into= c("Wins","Total"),sep="of")%>%
+  rename("Team"=1)%>%
+  mutate(Year = as.integer(Year),Wins = as.integer(Wins),Total = as.integer(Total))
+
+wins_tidy%>%dim()
+
+
+```
+
+
+```{r}
+wins_tidy%>%head(5)
+```
+####Q2
+```{r}
+library(readxl) # load the readxl library
+folder_path<-"/Users/zhenliu15471/code/zliu15471/SCEM-Msc-datascience/SCEM-Msc-datascience/"  # set this to the name of the 
+# directory containing "HockeyLeague.xlsx"
+file_name<-"HockeyLeague.xlsx"  # set the file name
+file_path<-paste(folder_path,file_name,sep="") 
+# create the file_path
+loss_data_frame<-read_excel(file_path,sheet="Losses") # read of a sheet from an xl file
+```
+```{r}
+losses_tidy<- loss_data_frame%>%
+  pivot_longer(!1,names_to = 'Year',values_to = "value")%>%
+  separate(value,into= c("Losses","Total"),sep="of")%>%
+  rename("Team"=1)%>%
+  mutate(Year = as.integer(Year),Losses = as.integer(Losses),Total = as.integer(Total))
+
+wins_tidy%>%dim()
+```
+
+```{r}
+losses_tidy%>%head(5)
+```
+####Q3
 
 ```{r}
 
 
 
+hockey_df<-inner_join(wins_tidy,losses_tidy)
 
-
-
+hockey_df_new<-hockey_df%>%
+  mutate(Draws= Total-(Wins +Losses),Wins_rt = round(Wins/Total,2),Losses_rt = round(Losses/Total,2), Draws_rt = round(Draws/Total,2))
+  
 
 
 ```
+####Q4
+
+```{r}
+
+
+#hockey_df_new%>%
+  #group_by(Team)%>%
+  #select(Team,Wins_rt,Losses_rt,Draws_rt)%>%
+  #summarise(across(everything()),list(mean=mean,median=median),names=c(W_mn,W_mn,L_mn,L_md,D_mn,D_md))
+
+```
+
+```{r}
+
+hockey_df_new%>%
+  group_by(Team)%>%
+  summarise(W_md= median(Wins_rt),W_mn = round(mean(Wins_rt),3),L_md = median(Losses_rt), L_mn =round(mean(Losses_rt),3),D_md= median(Draws_rt),D_mn = round(mean(Draws_rt),3))%>%
+  arrange(desc(W_md))
+```
+
+##3 Visualisation
 
