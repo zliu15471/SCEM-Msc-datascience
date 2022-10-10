@@ -292,4 +292,34 @@ hockey_df_new%>%
 ```
 
 ##3 Visualisation
+####Q1
+
+```{r}
+
+univar_plot<- ggplot(data=filter(wins_tidy,Team =="Ducks"),aes(x=Wins)) + xlab("wins") 
+univar_plot +geom_histogram(binwidth = 3) + ylab("Count")
+
+```
+####Q2
+```{r}
+univar_plot+geom_density(adjust = 0.5) +ylab('Density')
+
+```
+```{r}
+univar_plot+geom_density(adjust = 2) +ylab('Density')
+```
+####Q3
+
+
+```{r}
+
+
+
+
+
+
+
+
+
+```
 
