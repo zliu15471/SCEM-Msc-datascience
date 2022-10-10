@@ -201,4 +201,17 @@ df_xy_imputed<-df_xy_missing%>%
 df_xy_imputed
 
 ```
+###2.2 Tidying data with pivot functions
+####Q1
+
+```{r}
+
+
+
+
+
+
+
+
+```
 
