@@ -24,21 +24,20 @@ data("Hawks")
 
 ```{r}
 hSF<-Hawks%>%
-  filter(Species == 'RT'& Weight > 1)%>%
+  filter(Species == 'RT'& Weight >= 1000)%>%
   select(Wing,Weight,Tail)
-head(hSF)
+head(hSF,5)
 ```
 #### Q2 
 #### How many variables does the data frame hSF have? How mant examples does the data frame hSF have? How many observations? How many cases?
 
 ```{r}
 
-dim(hSF)
+hSF%>%nrow()
 ```
 
 totally 3 variables Wing, Weight, Tail\
-totally 573 obervations per variable\
-totally 1716 cases or examples
+totally 398 obervations or cases or examples
 
 ### 1.2 The arrange function
 
