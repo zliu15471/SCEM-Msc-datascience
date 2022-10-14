@@ -16,9 +16,27 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 
-
+library(tidyverse)
+library(Stat2Data)
+data("Hawks")
 ```
 
+```{r}
+head(Hawks)
+
+```
+### 1.1 Location estimators
+
+#### Q1 
+
+```{r}
+
+
+HawksTail<-c()
+
+
+
+```
 
 
 
