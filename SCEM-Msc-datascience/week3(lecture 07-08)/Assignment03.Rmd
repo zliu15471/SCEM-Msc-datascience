@@ -32,9 +32,10 @@ head(Hawks)
 ```{r}
 
 
-HawksTail<-c()
+HawksTail<-Hawks%>%
+  select(Tail)
 
-
+HawksTail
 
 ```
 
