@@ -32,13 +32,25 @@ head(Hawks)
 ```{r}
 
 
-HawksTail<-Hawks%>%
-  select(Tail)
+HawksTail<-Hawks[['Tail']]
 
 HawksTail
+```
+```{r}
+
+class(HawksTail)
+
+mean(HawksTail)
+
+
+median(HawksTail)
+```
+### 1.2 Combining location estimators with the summarise function 
+#### Q1
+
+```{r}
 
 ```
-
 
 
 
