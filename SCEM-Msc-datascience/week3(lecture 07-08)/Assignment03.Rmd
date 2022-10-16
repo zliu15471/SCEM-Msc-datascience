@@ -50,11 +50,47 @@ median(HawksTail)
 
 ```{r}
 
+hawksFullName%>%
+  summarise(Wing_mean= mean(Wing,na.rm = TRUE),Wing_t_mean = mean(Wing,na.rm = TRUE,trim = 0.5), Wing_med = median(Wing,na.rm = TRUE),Weight_mean= mean(Weight,na.rm = TRUE),Weight_t_mean = mean(Weight,na.rm = TRUE,trim = 0.5), Weight_med = median(Weight,na.rm = TRUE))
 
+
+```
+#### Q2
+```{r}
+
+
+hawksFullName%>%
+  group_by(Species)%>%
+  summarise(Wing_mean= mean(Wing,na.rm = TRUE),Wing_t_mean = mean(Wing,na.rm = TRUE,trim = 0.5), Wing_med = median(Wing,na.rm = TRUE),Weight_mean= mean(Weight,na.rm = TRUE),Weight_t_mean = mean(Weight,na.rm = TRUE,trim = 0.5), Weight_med = median(Weight,na.rm = TRUE))
 
 
 
 ```
 
+### 1.3 Location and dispersion estimators under linear transformations 
 
+#### Q1
+
+```{r}
+
+a<- 2
+b<-3
+
+mean(HawksTail*a +b)
+
+mean(HawksTail)
+
+```
+The mean of HawksTail*a +b is almost double times as HawksTail
+
+#### Q2
+
+```{r}
+
+
+
+
+
+
+```
 
