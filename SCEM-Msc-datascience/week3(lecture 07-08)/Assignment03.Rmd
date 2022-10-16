@@ -87,10 +87,48 @@ The mean of HawksTail*a +b is almost double times as HawksTail
 
 ```{r}
 
+var(HawksTail*a +b)
+var(HawksTail)
+
+sd(HawksTail*a +b)
+sd(HawksTail)
+```
+The variance of HawksTail*a +b is almost four times as HawksTail
+The standard deviation of HawksTail*a +b is almost two times as HawksTail
+
+### 1.4 Robustness of location estimators
 
 
+```{r}
 
+hal<-Hawks$Hallux # Extract the vector of hallux lengths 
+hal<-hal[!is.na(hal)] # Remove any nans
+
+```
+
+```{r}
+outlier_val<-100 
+num_outliers<-10
+
+corrupted_hal<-c(hal,rep(outlier_val,times=num_outliers))
+
+mean(hal)
+mean(corrupted_hal)
 
 
 ```
+
+```{r}
+num_outliers_vect <- seq(0,1000) 
+means_vect <- c() 
+for(num_outliers in num_outliers_vect){
+  corrupted_hal <-c(hal,rep(outlier_val,times=num_outliers)) 
+  means_vect <- c(means_vect, mean(corrupted_hal))
+}
+```
+
+
+
+
+
 
