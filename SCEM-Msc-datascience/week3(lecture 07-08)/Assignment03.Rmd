@@ -127,8 +127,98 @@ for(num_outliers in num_outliers_vect){
 }
 ```
 
+#### Q1
+
+```{r}
+
+medians_vect<-c()
+for(num_outliers in num_outliers_vect){
+  corrupted_hal<-c(hal,rep(outlier_val,times=num_outliers))
+  medians_vect<-c(medians_vect,median(corrupted_hal))
+}
+
+```
+
+#### Q2
+
+```{r}
+t_means_vect<-c()
+for(num_outliers in num_outliers_vect){
+  corrupted_hal<-c(hal,rep(outlier_val,times=num_outliers))
+  t_means_vect<-c(t_means_vect,mean(corrupted_hal,trim = 0.1))
+}
+```
+
+#### Q3
+```{r}
+
+df_means_medians <-
+  data.frame(num_outliers=num_outliers_vect,
+             mean=means_vect, t_mean=t_means_vect,
+             median=medians_vect)
 
 
+```
+
+```{r}
+
+df_means_medians %>% pivot_longer(!num_outliers,
+                                  names_to = "Estimator", values_to = "Value") %>%
+  ggplot(aes(x=num_outliers,color=Estimator,
+             linetype=Estimator,y=Value)) +
+  geom_line()+xlab("Number of outliers")
+
+
+
+```
+### 1.5 Box plots and outliers
+
+```{r}
+
+
+ggplot(Hawks,aes(x=Species,y=Weight)) +
+  geom_boxplot()+xlab("Species") + ylab("Weight")
+
+
+
+```
+#### Q2
+
+```{r}
+
+q =c(0.25,0.5,0.75)
+
+Hawks%>%
+  group_by(Species)%>%
+  summarise(quantile025 = quantile(Weight, probs = q[1],na.rm=TRUE),
+            quantile050 = quantile(Weight, probs = q[2],na.rm=TRUE),
+            quantile075 = quantile(Weight, probs = q[3],na.rm=TRUE))
+
+```
+#### Q3
+
+```{r}
+num_outliers<- function(input_sample){
+  quantile25<- quantile(input_sample,0.25, na.rm = TRUE)
+  quantile75<- quantile(input_sample,0.75, na.rm = TRUE)
+  iq_range<- quantile75 - quantile25
+  outliers <- input_sample[(input_sample>quantile75+1.5*iq_range)| (input_sample<quantile25-1.5*iq_range)]
+  n<-length(outliers)
+  return(n)
+}
+
+num_outliers(c(0,40,60,185))
+```
+#### Q4
+
+
+```{r}
+
+
+
+
+
+```
 
 
 
