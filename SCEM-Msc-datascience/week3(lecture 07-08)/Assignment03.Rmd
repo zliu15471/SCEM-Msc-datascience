@@ -325,6 +325,6 @@ $$
 #### Q3 Cardinality and the set of all subsets:
 
 
-$$ E := \{A∈Ω :A∈A_K &nbsp; &nbsp; for all i\}$$
+$$ E := \{A∈Ω :A∈A_K &nbsp; &nbsp; for all i \}$$
 
 
