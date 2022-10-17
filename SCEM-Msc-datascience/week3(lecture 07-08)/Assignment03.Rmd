@@ -306,18 +306,25 @@ Let Ω be a sample space. Recall that for an event A ⊆ Ω the complement Ac 
 6. Let’s suppose we have a sequence of events A1,A2,··· ,AK ⊂ Ω. Can you write out an expression for (∪K k=1Ak)c?
 
 
-
 Answer:
 1. A
 2. empty set
 3. A: {1,2,3} B{1,2,3,4,5} Ω:{1,2,3,4,5,6,7,8,9}
    Ac :{4,5,6,7,8,9}   Bc:{6,7,8,9}
    Bc ⊆ Ac
-4. 
+4. $$(∩_{k=1}^{K} A_k)^c := ∪_{k=1}^{K} (A_k)^c$$
+
+5. $$A∪B: = \{1,2,3,4,5\}$$ 
+$$(A∪B)^c: = \{6,7,8,9\}$$ 
+$$A^c: = \{4,5,6,7,8,9\}\     
+B^c : =\{6,7,8,9\} \
+A^c ∩ B^c := \{6,7,8,9\}
+$$ 
+6. $$(∪_{k=1}^{K} A_k)^c := ∩_{k=1}^{K} (A_k)^c$$
+
+#### Q3 Cardinality and the set of all subsets:
 
 
-
-
-
+$$ E := \{A∈Ω :A∈A_K &nbsp; &nbsp; for all i\}$$
 
 
