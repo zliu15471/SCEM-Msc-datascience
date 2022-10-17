@@ -285,46 +285,116 @@ Let the sets A, B, C be defined by A := {1, 2, 3}, B := {2, 4, 6}, C := {4, 5, 6
 6. Write down a partition of {1,2,3,4,5,6} consisting of two sets. Also, write down another partition of {1,2,3,4,5,6} consisting of three sets
 
 
-Answer: 
-1. unions A∪B : {1,2,3,4,6}    A∪C :{1,2,3,4,5,6}
-2. intersections  A ∩ B : {2}    A∩C  empty set 
-3. complements A\B : {1,3}    A\C: {1,2,3}
-4. no  / yes
-5. yes
-6. {1,2,3}   {4,5,6}
+Answer: \
+1. unions A∪B : {1,2,3,4,6}    A∪C :{1,2,3,4,5,6} \
+2. intersections  A ∩ B : {2}    A∩C  empty set \
+3. complements A\B : {1,3}    A\C: {1,2,3}  \
+4. no  / yes \
+5. yes \
+6. {1,2,3}   {4,5,6}  \
 {1,2} {3,4} {5,6}
 
 
 #### Q2 Complements, subsets and De Morgan’s laws
 
-Let Ω be a sample space. Recall that for an event A ⊆ Ω the complement Ac := Ω\A := {w ∈ Ω : w /∈ A}. Take a pair of events A ⊆ Ω and B ⊆ Ω.
-1. Can you give an expression for (Ac)c without using the notion of a complement? 
-2. What is Ωc? 
-3. (Subsets) Show that if A ⊆ B, then Bc ⊆ Ac. 
-4. (De Morgan’s laws) Show that (A ∩ B)c = Ac ∪ Bc. Let’s suppose we have a sequence of events A1,A2,··· ,AK ⊂ Ω. Can you write out an expression for (∩K k=1Ak)c? 
-5. (De Morgan’s laws) Show that (A∪B)c = Ac ∩Bc. 
-6. Let’s suppose we have a sequence of events A1,A2,··· ,AK ⊂ Ω. Can you write out an expression for (∪K k=1Ak)c?
+Let Ω be a sample space. Recall that for an event A ⊆ Ω the complement Ac := Ω\A := {w ∈ Ω : w /∈ A}. Take a pair of events A ⊆ Ω and B ⊆ Ω.\
+1. Can you give an expression for (Ac)c without using the notion of a complement? \
+2. What is Ωc? \
+3. (Subsets) Show that if A ⊆ B, then Bc ⊆ Ac. \
+4. (De Morgan’s laws) Show that (A ∩ B)c = Ac ∪ Bc. Let’s suppose we have a sequence of events A1,A2,··· ,AK ⊂ Ω. Can you write out an expression for (∩K k=1Ak)c? \
+5. (De Morgan’s laws) Show that (A∪B)c = Ac ∩Bc. \
+6. Let’s suppose we have a sequence of events A1,A2,··· ,AK ⊂ Ω. Can you write out an expression for (∪K k=1Ak)c?\
 
 
-Answer:
-1. A
-2. empty set
+Answer:\
+1. A \
+2. empty set\
 3. A: {1,2,3} B{1,2,3,4,5} Ω:{1,2,3,4,5,6,7,8,9}
-   Ac :{4,5,6,7,8,9}   Bc:{6,7,8,9}
-   Bc ⊆ Ac
-4. $$(∩_{k=1}^{K} A_k)^c := ∪_{k=1}^{K} (A_k)^c$$
-
+   Ac :{4,5,6,7,8,9}   Bc:{6,7,8,9}\
+   Bc ⊆ Ac \
+4. $$(∩_{k=1}^{K} A_k)^c := ∪_{k=1}^{K} (A_k)^c$$\
 5. $$A∪B: = \{1,2,3,4,5\}$$ 
 $$(A∪B)^c: = \{6,7,8,9\}$$ 
 $$A^c: = \{4,5,6,7,8,9\}\     
 B^c : =\{6,7,8,9\} \
-A^c ∩ B^c := \{6,7,8,9\}
+A^c ∩ B^c := \{6,7,8,9\}\
 $$ 
 6. $$(∪_{k=1}^{K} A_k)^c := ∩_{k=1}^{K} (A_k)^c$$
 
 #### Q3 Cardinality and the set of all subsets:
 
 
-$$ E := \{A∈Ω :A∈A_K &nbsp; &nbsp; for all i \}$$
+$$E := \{A∈Ω :A∈A_i\text{ for all i = 1,2,...,K }\}$$\
+
+#### Q4 Disjointness and partitions
+
+1. $$A_1: = \{1\}, A_2 = :\{2\},A_3 = :\{3\},A_4 = :\{4\},
+Ω: =\{1,2,3,4\}$$ \
+2. $$S_1:=\{1\},S_2:=\{2\},S_3:=\{3\},S_4:=\{4\}$$\
+$$S_1,S_2,S_3,S_4\text{ form a partition of} \{1,2,3,4\}$$\
+
+#### Q5 Indicator function
+1. $$1_A{^c}(w)=\begin{array}{cc}
+  \{ & 
+    \begin{array}{cc}
+      1_A &\text{if} &w!\in A \\
+      1_A & \text{if}&w ∈A
+    \end{array}
+\end{array}
+$$
+2.  $$B = Ω $$ 
+3. 
 
 
+#### Q6 Uncountable infinities
+
+
+## 3.Visualisation
+
+#### Q1 Density plot:
+
+```{r}
+library(ggplot2)
+ggplot(Hawks,aes(x=Tail,group=Species,color=Species)) + geom_density()+xlab("Tail (mm)") + ylab("Density")
+
+```
+#### Q2 Violin plot:
+
+```{r}
+
+ggplot(Hawks,aes(x=Tail,y="",fill=Species)) + 
+  geom_violin()+xlab("Tail (mm)") + ylab("Density")
+
+```
+#### Q2 Scatter plot:
+```{r}
+
+ggplot(Hawks,aes(x=Tail,y=Weight,group=Species,color=Species,shape=Species)) + geom_point(size =1,na.rm = TRUE)+xlab("Tail (mm)") + ylab("Weight(mm)")
+
+
+```
+1. 5 types
+2. key_points
+3. Species
+
+#### Q4
+
+```{r}
+ggplot(Hawks,aes(x=Tail,y=Weight,group=Species,color=Species,shape=Species)) + geom_point(size =1,na.rm = TRUE)+geom_smooth(method = "lm",na.rm = TRUE)+xlab("Tail (mm)") + ylab("Weight(mm)")+
+  facet_wrap(~ Species)
+
+
+
+
+
+
+```
+
+1. Species
+2. positive correlation
+
+#### Q5
+
+
+
+ 

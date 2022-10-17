@@ -1,4 +1,6 @@
 # Data analysis
+SCEM course 
+
 - Document here the project: SCEM-Msc-datascience
 - Description: Project Description
 - Data Source:
