@@ -42,7 +42,6 @@ class(HawksTail)
 
 mean(HawksTail)
 
-
 median(HawksTail)
 ```
 ### 1.2 Combining location estimators with the summarise function 
@@ -50,7 +49,7 @@ median(HawksTail)
 
 ```{r}
 
-hawksFullName%>%
+Hawks%>%
   summarise(Wing_mean= mean(Wing,na.rm = TRUE),Wing_t_mean = mean(Wing,na.rm = TRUE,trim = 0.5), Wing_med = median(Wing,na.rm = TRUE),Weight_mean= mean(Weight,na.rm = TRUE),Weight_t_mean = mean(Weight,na.rm = TRUE,trim = 0.5), Weight_med = median(Weight,na.rm = TRUE))
 
 
@@ -59,7 +58,7 @@ hawksFullName%>%
 ```{r}
 
 
-hawksFullName%>%
+Hawks%>%
   group_by(Species)%>%
   summarise(Wing_mean= mean(Wing,na.rm = TRUE),Wing_t_mean = mean(Wing,na.rm = TRUE,trim = 0.5), Wing_med = median(Wing,na.rm = TRUE),Weight_mean= mean(Weight,na.rm = TRUE),Weight_t_mean = mean(Weight,na.rm = TRUE,trim = 0.5), Weight_med = median(Weight,na.rm = TRUE))
 
@@ -233,55 +232,91 @@ cor(Hawks$Weight,Hawks$Wing,use = 'complete.obs')
 ```
 #### Q2
 
-
-S = sum((x-mean(X))*(y-mean(Y)))/n
-
-S*n = sum((x-mean(X))*(y-mean(Y))= sum(x*y-x*mean(Y)-y*mean(X)+mean(X)*mean(Y))
-x_new = x*a +b
-y_new = y*c +d
-
-
-S_new = sum((x_new-mean(X))*(y_new-mean(Y)))/n 
-S_new*n = sum((x*a+b-a*mean(X))*(y*c+d-c*mean(Y)))
-        = a*c*sum((x+b-mean(X))*(y+d-mean(Y)))
-        = a*c*sum(x*y+x*d-x*mean(Y)+b*y+b*d-b*mean(Y)-y*mean(X)+d*mean(X)+mean(X)*mean(Y))
-        = a*c*sum(x*y-x*mean(Y)-y*mean(X)+mean(X)*mean(Y))) + a*c*sum(x*d+b*y+b*d-b*mean(Y)+d*mean(X))
-        = S*n+  a*c*sum(x*d+b*y+b*d-b*mean(Y)+d*mean(X))
-S_new = S + a*c*sum(x*d+b*y+b*d-b*mean(Y)+d*mean(X))/n
-
-
 ```{r}
-
-
-
-a<- 2.4
-b<-7.1
-c<--1
-d<-3
-
-
-S_new<- function(X,Y){
+S_new_n<- function(X,Y,a,b,c,d){
   S <- cov(X,Y,use ='complete.obs' )
-  n<-length(X)
-  X_mean <- mean(Hawks[['Weight']],na.rm = TRUE)
-  Y_mean <- mean(Hawks[['Wing']],na.rm = TRUE)
-  S_new <- S + -2.4*sum(x*3+7.1*y+ 7.1*3-7.1*Y_mean+3*X_mean)/n
+  x_new<- a*X+b
+  y_new<- c*Y+d
+  S_new <- abs(cov(x_new,y_new,use ='complete.obs'))
+  
   return(S_new)
 }
-
 ```
-
 ```{r}
 
-S_new(Hawks$Weight,Hawks$Wing)
-S <- cov(Hawks$Weight,Hawks$Wing,use ='complete.obs' )
-S
+S_new_n(Hawks$Weight,Hawks$Wing,2.4,7.1,-1,3)
+
 ```
+
+S_new is 2.4 times than S
+
 ## 2. Random experiments, events and sample spaces, and the set theory
 
 ### 2.1 Random experiments, events and sample sapces
 
-#### Q1
+#### Q1 Firstly, write down the definition of a random experiment, event and sample space.
+
+A random experiment is a procedure (real or imagined) which: 
+1. has a well-defined set of possible outcomes; 
+2. could (at least in principle) be repeated arbitrarily many times.
+
+An event is a set (i.e. a collection) of possible outcomes of an experiment
+
+A sample space is the set of all possible outcomes of interest for a random experiment
+
+
+#### Q2 Consider a random experiment of rolling a dice twice. Give an example of what is an event in this random experiment. Also, can you write down the sample space as a set? What is the total number of different events in this experiment? Is the empty set considered as an event?
+
+Example event : get {6,6}
+Total number of different events : 36
+you cannot get an empty set because you must get a number when you rolling a dice 
+
+### 2.2 Set theory
+
+#### Q1 Set operations:
+
+Let the sets A, B, C be defined by A := {1, 2, 3}, B := {2, 4, 6}, C := {4, 5, 6}. 
+
+1. What are the unions A∪B and A∪C? 
+2. What are the intersections A ∩ B and A∩C? 
+3. What are the complements A\B and A\C? 
+4. Are A and B disjoint? Are A and C disjoint? 
+5. Are B and A\B disjoint? 
+6. Write down a partition of {1,2,3,4,5,6} consisting of two sets. Also, write down another partition of {1,2,3,4,5,6} consisting of three sets
+
+
+Answer: 
+1. unions A∪B : {1,2,3,4,6}    A∪C :{1,2,3,4,5,6}
+2. intersections  A ∩ B : {2}    A∩C  empty set 
+3. complements A\B : {1,3}    A\C: {1,2,3}
+4. no  / yes
+5. yes
+6. {1,2,3}   {4,5,6}
+{1,2} {3,4} {5,6}
+
+
+#### Q2 Complements, subsets and De Morgan’s laws
+
+Let Ω be a sample space. Recall that for an event A ⊆ Ω the complement Ac := Ω\A := {w ∈ Ω : w /∈ A}. Take a pair of events A ⊆ Ω and B ⊆ Ω.
+1. Can you give an expression for (Ac)c without using the notion of a complement? 
+2. What is Ωc? 
+3. (Subsets) Show that if A ⊆ B, then Bc ⊆ Ac. 
+4. (De Morgan’s laws) Show that (A ∩ B)c = Ac ∪ Bc. Let’s suppose we have a sequence of events A1,A2,··· ,AK ⊂ Ω. Can you write out an expression for (∩K k=1Ak)c? 
+5. (De Morgan’s laws) Show that (A∪B)c = Ac ∩Bc. 
+6. Let’s suppose we have a sequence of events A1,A2,··· ,AK ⊂ Ω. Can you write out an expression for (∪K k=1Ak)c?
+
+
+
+Answer:
+1. A
+2. empty set
+3. A: {1,2,3} B{1,2,3,4,5} Ω:{1,2,3,4,5,6,7,8,9}
+   Ac :{4,5,6,7,8,9}   Bc:{6,7,8,9}
+   Bc ⊆ Ac
+4. 
+
+
+
 
 
 
