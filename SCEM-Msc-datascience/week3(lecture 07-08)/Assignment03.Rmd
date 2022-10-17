@@ -182,7 +182,7 @@ ggplot(Hawks,aes(x=Species,y=Weight)) +
 
 
 ```
-#### Q2
+#### Q2  quantile annd boxplots
 
 ```{r}
 
@@ -195,30 +195,94 @@ Hawks%>%
             quantile075 = quantile(Weight, probs = q[3],na.rm=TRUE))
 
 ```
-#### Q3
+#### Q3  outliers
 
 ```{r}
 num_outliers<- function(input_sample){
   quantile25<- quantile(input_sample,0.25, na.rm = TRUE)
   quantile75<- quantile(input_sample,0.75, na.rm = TRUE)
   iq_range<- quantile75 - quantile25
-  outliers <- input_sample[(input_sample>quantile75+1.5*iq_range)| (input_sample<quantile25-1.5*iq_range)]
-  n<-length(outliers)
+  outliers <- input_sample[(input_sample>quantile75+1.5*iq_range) | (input_sample<quantile25-1.5*iq_range)]
+  n<-length(which(!is.na(outliers)))
   return(n)
 }
 
 num_outliers(c(0,40,60,185))
 ```
-#### Q4
+#### Q4 Outliers by group 
+
+
+```{r}
+Hawks%>%
+  group_by(Species)%>%
+  summarise(num_outliers_weight=num_outliers(Weight))
+
+
+```
+
+### 1.6 Covariance and correlation
+
+#### Q1
+
+```{r}
+
+cov(Hawks$Weight,Hawks$Wing,use = 'complete.obs')
+
+cor(Hawks$Weight,Hawks$Wing,use = 'complete.obs')
+
+```
+#### Q2
+
+
+S = sum((x-mean(X))*(y-mean(Y)))/n
+
+S*n = sum((x-mean(X))*(y-mean(Y))= sum(x*y-x*mean(Y)-y*mean(X)+mean(X)*mean(Y))
+x_new = x*a +b
+y_new = y*c +d
+
+
+S_new = sum((x_new-mean(X))*(y_new-mean(Y)))/n 
+S_new*n = sum((x*a+b-a*mean(X))*(y*c+d-c*mean(Y)))
+        = a*c*sum((x+b-mean(X))*(y+d-mean(Y)))
+        = a*c*sum(x*y+x*d-x*mean(Y)+b*y+b*d-b*mean(Y)-y*mean(X)+d*mean(X)+mean(X)*mean(Y))
+        = a*c*sum(x*y-x*mean(Y)-y*mean(X)+mean(X)*mean(Y))) + a*c*sum(x*d+b*y+b*d-b*mean(Y)+d*mean(X))
+        = S*n+  a*c*sum(x*d+b*y+b*d-b*mean(Y)+d*mean(X))
+S_new = S + a*c*sum(x*d+b*y+b*d-b*mean(Y)+d*mean(X))/n
 
 
 ```{r}
 
 
 
+a<- 2.4
+b<-7.1
+c<--1
+d<-3
 
+
+S_new<- function(X,Y){
+  S <- cov(X,Y,use ='complete.obs' )
+  n<-length(X)
+  X_mean <- mean(Hawks[['Weight']],na.rm = TRUE)
+  Y_mean <- mean(Hawks[['Wing']],na.rm = TRUE)
+  S_new <- S + -2.4*sum(x*3+7.1*y+ 7.1*3-7.1*Y_mean+3*X_mean)/n
+  return(S_new)
+}
 
 ```
+
+```{r}
+
+S_new(Hawks$Weight,Hawks$Wing)
+S <- cov(Hawks$Weight,Hawks$Wing,use ='complete.obs' )
+S
+```
+## 2. Random experiments, events and sample spaces, and the set theory
+
+### 2.1 Random experiments, events and sample sapces
+
+#### Q1
+
 
 
 
