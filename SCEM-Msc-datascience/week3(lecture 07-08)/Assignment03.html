@@ -777,6 +777,12 @@ ggplot(Hawks,aes(x=Tail,group=Species,color=Species)) + geom_density()+xlab(&quo
 </div>
 <div id="q5" class="section level4">
 <h4>Q5</h4>
+<pre class="r"><code>library(tidyverse)
+Hawks%&gt;%
+  select(Weight,Tail)%&gt;%
+  filter(Weight==max(Weight))</code></pre>
+<pre><code>## [1] Weight Tail  
+## &lt;0 rows&gt; (or 0-length row.names)</code></pre>
 </div>
 </div>
 

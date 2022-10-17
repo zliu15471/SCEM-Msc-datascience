@@ -366,7 +366,7 @@ ggplot(Hawks,aes(x=Tail,y="",fill=Species)) +
   geom_violin()+xlab("Tail (mm)") + ylab("Density")
 
 ```
-#### Q2 Scatter plot:
+#### Q3 Scatter plot:
 ```{r}
 
 ggplot(Hawks,aes(x=Tail,y=Weight,group=Species,color=Species,shape=Species)) + geom_point(size =1,na.rm = TRUE)+xlab("Tail (mm)") + ylab("Weight(mm)")
@@ -383,11 +383,6 @@ ggplot(Hawks,aes(x=Tail,y=Weight,group=Species,color=Species,shape=Species)) + g
 ggplot(Hawks,aes(x=Tail,y=Weight,group=Species,color=Species,shape=Species)) + geom_point(size =1,na.rm = TRUE)+geom_smooth(method = "lm",na.rm = TRUE)+xlab("Tail (mm)") + ylab("Weight(mm)")+
   facet_wrap(~ Species)
 
-
-
-
-
-
 ```
 
 1. Species
@@ -395,6 +390,27 @@ ggplot(Hawks,aes(x=Tail,y=Weight,group=Species,color=Species,shape=Species)) + g
 
 #### Q5
 
+```{r}
+
+library(tidyverse)
+Hawks%>%
+  select(Weight,Tail)%>%
+  filter(Weight==max(Weight,na.rm = TRUE))
+
+```
+```{r}
+ggplot(Hawks,aes(x=Tail,y=Weight,group=Species,color=Species,shape=Species)) + geom_point(size =1,na.rm = TRUE)+xlab("Tail (mm)") + ylab("Weight(mm)")+ geom_curve(
+  aes(x = 196, y = 2030, xend =196, yend = 1800),
+  arrow=arrow(ends ="first",length = unit(0.03,"npc"),type = "open"),
+  colour = "#EC7014",
+  size = 0.5,
+  angle = 90 # Anything other than 90 or 0 can look unusual
+)+annotate("text", x = 200, y = 1780, label = "Heaviest Hawks")
+
+
+
+
+```
 
 
  
