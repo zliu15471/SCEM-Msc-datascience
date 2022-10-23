@@ -2,10 +2,36 @@
 title: "Assignment04"
 author: "Zhen Liu"
 date: "2022-10-23"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+## 1.Probability theory 
+
+### 1.1 Rules of probability 
+
+#### Q1
+P({a}) = 0.4
+P({b}) = 0.1
+P({c})=0.5
+
+#### Q2 
+
+rule 1: P(∅) = 0, since q ∈ [0,1], hence P({0}) = 1−q ≥ 0, P({1}) = q ≥ 0, P({0,1}) = 1 satisfy that P(A) ≥ 0 for any event A ∈ E
+rule 2: Ω = {0,1} and P({0,1}) = 1 which satisfy P(Ω) = 1 for sample space Ω
+rule 3: P({0}) = 1−q, P({1}) = q, P({0,1}) = 1 = P({0}) + P({1}) which satisfy rule 3.
+
+### 1.2 Deriving new properties from the rules of probability
+
+#### Q1 Union of a finite sequence of disjoint events
+
+
+
+
+
 
