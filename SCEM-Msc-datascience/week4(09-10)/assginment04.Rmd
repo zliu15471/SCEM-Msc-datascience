@@ -46,4 +46,17 @@ P(A∪B)=P(A)+P(B)−P(A∩B)≤P(A)+P(B)
 $$\text{It is possible that} \ P(S_{i-1} ∩ S_{i-2}) >0 \ \text{hence} P(∪^\infty_{i=1}S_i) < \sum_{i=1}^{\infty}P(S_i)$$
 #### Q4
 
+$$A∪B = (A ∩ B) ∪ (A∩ B^c) ∪ (A^c∩ B)$$
+$$P(A)= P(A ∩ B)+P(A∩ B^c)$$
+$$P(B)= P(A ∩ B)+P(B∩ A^c)$$
+Based on rule 3 
+$$P(A ∪ B) = P[(A ∩ B) ∪ (A∩ B^c) ∪ (A^c∩ B)]=
+P(A ∩ B) + P(A∩ B^c) + P(A^c∩ B) = P(A) + P(B) - P(A ∩ B)$$
+
+## 2. Finite probability spaces
+
+### 2.1 Sampling with replacement
+
+#### Q1
+
 
