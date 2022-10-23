@@ -30,8 +30,20 @@ rule 3: P({0}) = 1−q, P({1}) = q, P({0,1}) = 1 = P({0}) + P({1}) which satisfy
 
 #### Q1 Union of a finite sequence of disjoint events
 
-![](Picture\ 1.png)
+Based on lecture 10 rule 3 proof,
 
+a finite probability sapce is triple (Ω,E,p) and E = {A ⊆ Ω}
+Ω is finite, $$P(∪^\infty_{i=1}A_i) =\sum_{i = 1}^{\infty}(\sum_{i = 1}^{n}p_i\mathbf {1}A_i(w_i)) $$
+hence $$P(∪^n_{i=1}A_i) =\sum_{i = 1}^{n}p_i\mathbf {1}A_i(w_i) =  \sum_{i = 1}^{n}\mathbf{p}(A_i)$$
+#### Q2 Probability of a complement 
 
+Based on rule 2 and rule 3
+
+$$P(S^c) + P(S)= 1.$$ hence $$P(S^c) = 1 - P(S)$$
+#### Q3 The union bound 
+
+P(A∪B)=P(A)+P(B)−P(A∩B)≤P(A)+P(B)
+$$\text{It is possible that} \ P(S_{i-1} ∩ S_{i-2}) >0 \ \text{hence} P(∪^\infty_{i=1}S_i) < \sum_{i=1}^{\infty}P(S_i)$$
+#### Q4
 
 
