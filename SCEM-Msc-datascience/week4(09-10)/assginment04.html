@@ -389,14 +389,21 @@ rule 3.</p>
 finite, <span class="math display">\[P(∪^\infty_{i=1}A_i) =\sum_{i =
 1}^{\infty}(\sum_{i = 1}^{n}p_i\mathbf {1}A_i(w_i)) \]</span> hence
 <span class="math display">\[P(∪^n_{i=1}A_i) =\sum_{i = 1}^{n}p_i\mathbf
-{1}A_i(w_i) =  \sum_{i = 1}^{n}\mathbf{p}(A_i)\]</span> #### Q2
-Probability of a complement</p>
+{1}A_i(w_i) =  \sum_{i = 1}^{n}\mathbf{p}(A_i)\]</span></p>
+</div>
+<div id="q2-probability-of-a-complement" class="section level4">
+<h4>Q2 Probability of a complement</h4>
 <p>Based on rule 2 and rule 3</p>
-<p><span class="math display">\[P(S^c) + P(S)= 1.\]</span> hence <span class="math display">\[P(S^c) = 1 - P(S)\]</span> #### Q3 The union
-bound</p>
+<p><span class="math display">\[P(S^c) + P(S)= 1.\]</span> hence <span class="math display">\[P(S^c) = 1 - P(S)\]</span></p>
+</div>
+<div id="q3-the-union-bound" class="section level4">
+<h4>Q3 The union bound</h4>
 <p>P(A∪B)=P(A)+P(B)−P(A∩B)≤P(A)+P(B) <span class="math display">\[\text{It is possible that} \ P(S_{i-1} ∩ S_{i-2})
 &gt;0 \ \text{hence} P(∪^\infty_{i=1}S_i) &lt;
-\sum_{i=1}^{\infty}P(S_i)\]</span> #### Q4</p>
+\sum_{i=1}^{\infty}P(S_i)\]</span></p>
+</div>
+<div id="q4" class="section level4">
+<h4>Q4</h4>
 <p><span class="math display">\[A∪B = (A ∩ B) ∪ (A∩ B^c) ∪ (A^c∩
 B)\]</span> <span class="math display">\[P(A)= P(A ∩ B)+P(A∩
 B^c)\]</span> <span class="math display">\[P(B)= P(A ∩ B)+P(B∩
@@ -412,10 +419,13 @@ P(A ∩ B) + P(A∩ B^c) + P(A^c∩ B) = P(A) + P(B) - P(A ∩ B)\]</span></p>
 <h3>2.1 Sampling with replacement</h3>
 <div id="q1-1" class="section level4">
 <h4>Q1</h4>
-<p>$$<span class="math display">\[\begin{equation}
+<p><span class="math display">\[\begin{equation}
 P(A_{z,22})=\binom{22}{z}*(0.3)^z*(0.7)^{22-z}
 
-\end{equation}\]</span>$$ #### Q2</p>
+\end{equation}\]</span></p>
+</div>
+<div id="q2-1" class="section level4">
+<h4>Q2</h4>
 <pre class="r"><code>prob_red_spheres&lt;-function(z){
   pro&lt;- choose(22,z)*(0.3^z)*(0.7^(22-z))
   return(pro)
@@ -446,7 +456,7 @@ prob_by_num_reds %&gt;% head(3)</code></pre>
 ## 2        2 0.016588812
 ## 3        3 0.047396606</code></pre>
 </div>
-<div id="q4" class="section level4">
+<div id="q4-1" class="section level4">
 <h4>Q4</h4>
 <pre class="r"><code>library(ggplot2)
 ggplot(prob_by_num_reds,aes(x=num_reds,y=prob)) + geom_line()</code></pre>
@@ -455,7 +465,7 @@ ggplot(prob_by_num_reds,aes(x=num_reds,y=prob)) + geom_line()</code></pre>
 <div id="q5" class="section level4">
 <h4>Q5</h4>
 <pre class="r"><code>sample(10, 22, replace=TRUE)</code></pre>
-<pre><code>##  [1]  3  1  1  8 10  7  7  3 10  2  5  8  6  2  3  4  4  1  5  9  1  6</code></pre>
+<pre><code>##  [1]  3  5  6 10  5  6  4  3  9  5  6  4  8  6  1 10  8  4  7  2  6  2</code></pre>
 <pre class="r"><code>## Setting the random seed just once
 set.seed(0)
 for(i in 1:5){
@@ -537,9 +547,9 @@ mutate(sample_collections = map(.x=trial, ~sample(100,10, replace = FALSE)))</co
 <li></li>
 </ol>
 <pre class="r"><code>missing_values&lt;-pmin(sampling_without_replacement_simulation$reds,sampling_without_replacement_simulation$blues,sampling_without_replacement_simulation$greens)</code></pre>
-</div>
-<div id="q6-1" class="section level4">
-<h4>Q6</h4>
+<ol start="6" style="list-style-type: decimal">
+<li></li>
+</ol>
 <pre class="r"><code>missing_values%&gt;%
   table(missing_values==0)</code></pre>
 <pre><code>##    

@@ -35,15 +35,18 @@ Based on lecture 10 rule 3 proof,
 a finite probability sapce is triple (Ω,E,p) and E = {A ⊆ Ω}
 Ω is finite, $$P(∪^\infty_{i=1}A_i) =\sum_{i = 1}^{\infty}(\sum_{i = 1}^{n}p_i\mathbf {1}A_i(w_i)) $$
 hence $$P(∪^n_{i=1}A_i) =\sum_{i = 1}^{n}p_i\mathbf {1}A_i(w_i) =  \sum_{i = 1}^{n}\mathbf{p}(A_i)$$
+
 #### Q2 Probability of a complement 
 
 Based on rule 2 and rule 3
 
 $$P(S^c) + P(S)= 1.$$ hence $$P(S^c) = 1 - P(S)$$
+
 #### Q3 The union bound 
 
 P(A∪B)=P(A)+P(B)−P(A∩B)≤P(A)+P(B)
 $$\text{It is possible that} \ P(S_{i-1} ∩ S_{i-2}) >0 \ \text{hence} P(∪^\infty_{i=1}S_i) < \sum_{i=1}^{\infty}P(S_i)$$
+
 #### Q4
 
 $$A∪B = (A ∩ B) ∪ (A∩ B^c) ∪ (A^c∩ B)$$
@@ -59,10 +62,11 @@ P(A ∩ B) + P(A∩ B^c) + P(A^c∩ B) = P(A) + P(B) - P(A ∩ B)$$
 
 #### Q1
 
-$$\begin{equation} 
+\begin{equation} 
  P(A_{z,22})=\binom{22}{z}*(0.3)^z*(0.7)^{22-z}
 
-\end{equation}$$ 
+\end{equation}
+
 #### Q2
 
 ```{r}
@@ -77,6 +81,7 @@ prob_red_spheres<-function(z){
 prob_red_spheres(10)
 
 ```
+
 
 #### Q3 
 
@@ -202,12 +207,7 @@ sampling_without_replacement_simulation<-sampling_without_replacement_simulation
 ```{r}
 missing_values<-pmin(sampling_without_replacement_simulation$reds,sampling_without_replacement_simulation$blues,sampling_without_replacement_simulation$greens)
 ```
-#### Q6
-
-```{r}
-```
-
-
+6.
 ```{r}
 missing_values%>%
   table(missing_values==0)
