@@ -59,4 +59,26 @@ P(A ∩ B) + P(A∩ B^c) + P(A^c∩ B) = P(A) + P(B) - P(A ∩ B)$$
 
 #### Q1
 
+$$\begin{equation} 
+ P(A_{z,22})=\binom{22}{z}*(0.3)^z*(0.7)^{22-z}
+
+\end{equation}$$ 
+#### Q2
+
+```{r}
+
+prob_red_spheres<-function(z){
+  pro<- choose(22,z)*(0.3^z)*(0.7^(22-z))
+  return(pro)
+}
+
+
+```
+```{r}
+prob_red_spheres(10)
+
+```
+
+#### Q3 
+
 
