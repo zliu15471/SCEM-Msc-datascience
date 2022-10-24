@@ -72,7 +72,6 @@ prob_red_spheres<-function(z){
   return(pro)
 }
 
-
 ```
 ```{r}
 prob_red_spheres(10)
@@ -131,8 +130,91 @@ mutate(sample_balls = map(.x=trial, ~sample(10,22, replace = TRUE)))
 ```
 
 ```{r}
+sampling_with_replacement_simulation<-sampling_with_replacement_simulation%>%
+  mutate(num_reds = map_dbl(.x=sample_balls,~sum(.x<=3)))
+
+```
+
+#### Q6
+
+
+```{r}
+
+num_reds_in_simulation<-sampling_with_replacement_simulation %>%
+pull(num_reds)
+# we extract a vector corresponding to the number of reds in each trial
+prob_by_num_reds<-prob_by_num_reds %>%
+mutate(predicted_prob=map_dbl(.x=num_reds,~sum(num_reds_in_simulation==.x))/num_trials)
+# add a column which gives the number of trials with a given number of reds
 
 
 
 ```
+#### Q7
+
+```{r}
+prob_by_num_reds %>%
+rename(TheoreticalProbability=prob, EstimatedProbability=predicted_prob) %>%
+pivot_longer(cols=c("EstimatedProbability","TheoreticalProbability"),
+names_to="Type",values_to="count") %>%
+ggplot(aes(num_reds,count)) +
+geom_line(aes(linetype=Type, color=Type)) + geom_point(aes(color=Type)) +scale_linetype_manual(values = c("solid", "dashed"))+
+theme_bw() + xlab("Number of reds") + ylab("Probabilities")
+
+
+```
+
+### 2.2 Sampling without replacement
+
+#### Q1
+
+1. First set a random seed;
+```{r}
+set.seed(0)
+
+
+```
+2. 
+```{r}
+num_trials_no<-1000
+sample(100,10,replace = FALSE)
+```
+
+3. 
+```{r}
+
+sampling_without_replacement_simulation<-data.frame(trial=1:num_trials_no) %>%
+mutate(sample_collections = map(.x=trial, ~sample(100,10, replace = FALSE)))
+
+```
+4. 
+```{r}
+sampling_without_replacement_simulation<-sampling_without_replacement_simulation%>%
+  mutate(reds = map_dbl(.x=sample_collections,~sum(.x<=50)))%>%
+  mutate(blues = map_dbl(.x=sample_collections,~sum(.x>50 & .x<=80)))%>%
+  mutate(greens = map_dbl(.x=sample_collections,~sum(.x>80 & .x<=100)))
+
+  
+
+```
+
+5. 
+```{r}
+missing_values<-pmin(sampling_without_replacement_simulation$reds,sampling_without_replacement_simulation$blues,sampling_without_replacement_simulation$greens)
+```
+#### Q6
+
+```{r}
+```
+
+
+```{r}
+missing_values%>%
+  table(missing_values==0)
+portion<- 125/1000
+print(portion)
+```
+
+
+
 
