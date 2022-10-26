@@ -65,6 +65,7 @@ P(A ∩ B) + P(A∩ B^c) + P(A^c∩ B) = P(A) + P(B) - P(A ∩ B)$$
 \begin{equation} 
  P(A_{z,22})=\binom{22}{z}*(0.3)^z*(0.7)^{22-z}
 
+
 \end{equation}
 
 #### Q2
