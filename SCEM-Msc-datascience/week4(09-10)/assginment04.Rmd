@@ -16,9 +16,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ### 1.1 Rules of probability 
 
 #### Q1
-P({a}) = 0.4
+P({a}) = 0.5
 P({b}) = 0.1
-P({c})=0.5
+P({c})=0.4
 
 #### Q2 
 
