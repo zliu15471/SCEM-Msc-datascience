@@ -197,8 +197,9 @@ mutate(sample_collections = map(.x=trial, ~sample(100,10, replace = FALSE)))
 ```{r}
 sampling_without_replacement_simulation<-sampling_without_replacement_simulation%>%
   mutate(reds = map_dbl(.x=sample_collections,~sum(.x<=50)))%>%
-  mutate(blues = map_dbl(.x=sample_collections,~sum(.x>50 & .x<=80)))%>%
-  mutate(greens = map_dbl(.x=sample_collections,~sum(.x>80 & .x<=100)))
+  mutate(blues = map_dbl(.x=sample_collections,~sum((.x>50) *(.x<=80))))%>%
+  mutate(greens = map_dbl(.x=sample_collections,~sum((.x>80))),
+  )
 
   
 
@@ -206,13 +207,14 @@ sampling_without_replacement_simulation<-sampling_without_replacement_simulation
 
 5. 
 ```{r}
-missing_values<-pmin(sampling_without_replacement_simulation$reds,sampling_without_replacement_simulation$blues,sampling_without_replacement_simulation$greens)
+missing_values<-sampling_without_replacement_simulation%>%
+  mutate(mun_in = pmin(reds,blues,greens))
 ```
 6.
 ```{r}
-missing_values%>%
-  table(missing_values==0)
-portion<- 125/1000
+
+portion=mean(missing_values$mun_in==0)
+
 print(portion)
 ```
 
