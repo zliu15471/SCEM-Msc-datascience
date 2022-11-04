@@ -111,3 +111,56 @@ Cov(X,Y) := E(XY) - E(X)E(Y)\\
 ### Q3 
 
 $$Var(Y):= E[(Y-E(Y))^2]=\frac{1}{n^2}\sum(\alpha*(3-(3\alpha+10\beta))^2 + \beta*(10-(3\alpha+10\beta))^2+ (1-（\alpha + \beta))*(3\alpha+10\beta)^2)$$
+### Q4
+
+
+```{r}
+rmultinom(2, 7, prob=c(0.5, 0.2, 0.3))
+```
+
+```{r}
+a<-rmultinom(5, 3, prob=c(0.5, 0.2, 0.3))
+b<-a[1,]*0+a[2,]*3+a[3,]*10
+```
+
+
+```{r}
+c<-data.frame(b)
+c
+```
+
+
+```{r}
+samples_Xi<-rmultinom(50000, 3, prob=c(0.5, 0.2, 0.3))
+```
+
+
+```{r}
+Y<-samples_Xi[1,]*0+samples_Xi[2,]*3+samples_Xi[3,]*10
+samples_Y = data.frame(Y)
+```
+
+
+```{r}
+ggplot(samples_Y,aes(Y))+geom_bar()
+```
+```{r}
+samples_Xi_n<-rmultinom(50000, 20, prob=c(0.5, 0.2, 0.3))
+```
+```{r}
+Y_n<-samples_Xi_n[1,]*0+samples_Xi_n[2,]*3+samples_Xi_n[3,]*10
+samples_Y_n = data.frame(Y_n)
+ggplot(samples_Y_n,aes(Y_n))+geom_bar()
+```
+maximum value is 2300, minumum value is 0, range is 0~150
+
+
+
+```{r}
+samples_Xi_t<-rmultinom(50000, 2000, prob=c(0.5, 0.2, 0.3))
+Y_t<-samples_Xi_t[1,]*0+samples_Xi_t[2,]*3+samples_Xi_t[3,]*10
+samples_Y_t = data.frame(Y_t)
+ggplot(samples_Y_t,aes(Y_t))+geom_bar()
+
+```
+
