@@ -31,5 +31,45 @@ $$P(A|B) = \frac{P(A)*P(B|A)}{P(B)} = 0.9*0.8/0.745 = 0.966$$
 
 ### Q1
 
+1. $$P(A|B) = \frac{P(A\cap B)}{P(B)} \\
+A\subseteq B\\
+P(A\cap B)=P(A) \\
+P(A|B) = \frac{P(A)}{P(B)}$$
+$$P\subseteq∅$$
+2. $$P(A|B) = 0 \\ P(A) = 0$$  
+3. $$P(A|B) = \frac{P(A\cap B)}{P(B)} =\frac{P(B)}{P(B)} =1\\
+P(B) = 0$$
+4. $$P(A|Ω)) = \frac{P(A\capΩ)}{P(Ω)}\\
+P(Ω) =1\\
+P(A|Ω)) = P(A)$$
+5. $$P(A\cap B\cap C) = P(A\cap (B\cap C)) = P(A|(B\cap C))P(B\cap C)\\ = P(A|(B\cap C))(P(B|C)P(C))\\=P(A|(B\cap C)*P(B|C)*P(C)$$
+6.$$P(A|B\cap C) = \frac{P(A\cap B\cap C)}{P(B|C)*P(C)}\\
+=\frac{P(B|A\cap C)*P(A|C)*P(C)}{P(B|C)*P(C)}\\=\frac{P(B|A\cap C)*P(A|C)}{P(B|C)}$$
+### Q2
+$$P(A|B) = 0.3\\
+P(A|B^c) = 0.1\\
+P(B) = 0.2\\
+P(A^c) = 1-P(A)\\
+P(A) = P(A|B) *P(B) + P(A|B^c)*P(B^c) \\=
+0.3*0.2 + 0.1*0.8 = 0.14\\
+P(A^c) = 0.86$$
+
+## Mutual independence and pair-wise independent
+### Q1 
+
+$$A := \{(1,0,1),(1,1,0)\}, B := \{(0,1,1),(1,1,0)\} \\ C:=\{(0,1,1),(1,0,1)\}\\
+P(A) = P(B) = P(C) =1/2\\
+P(A\cap B) = P(A)*P(B) = 1/4\\
+P(A\cap C) = P(A)*P(C) = 1/4\\
+P(C\cap B) = P(C) *P(B) = 1/4\\
+P(A\cap B\cap C) = 0$$
+it is pariwise-independent 
+
+## The Monty hall problem
+### Q1 (optional)
+
+# Random variables and discrete random variables
+
+## Expectation and variance 
 
 
