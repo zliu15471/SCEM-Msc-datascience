@@ -9,5 +9,27 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r}
+library(tidyverse)
 
-sdasd
+```
+
+# Conditional probability, Bayes rule and independence
+
+## Bayes theorem 
+
+### Q1 
+
+$$P(A) = 0.9\\
+P(B|A) = 0.8\\
+P(B^c|A^c) =0.75
+$$
+$$P(B) = P(B|A)*P(A) + P(B|A^c)*P(A^c)=P(B|A)*P(A) +[1-P(B^c|A^c)]*[1-P(A)] = 0.8*0.9+0.25*0.1 =0.745
+$$
+$$P(A|B) = \frac{P(A)*P(B|A)}{P(B)} = 0.9*0.8/0.745 = 0.966$$
+## Conditional probabilities
+
+### Q1
+
+
+
