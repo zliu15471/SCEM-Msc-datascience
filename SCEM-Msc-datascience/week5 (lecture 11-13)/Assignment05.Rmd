@@ -14,11 +14,11 @@ library(tidyverse)
 
 ```
 
-# Conditional probability, Bayes rule and independence
+## Conditional probability, Bayes rule and independence
 
-## Bayes theorem 
+### Bayes theorem 
 
-### Q1 
+#### Q1 
 
 $$P(A) = 0.9\\
 P(B|A) = 0.8\\
@@ -27,9 +27,10 @@ $$
 $$P(B) = P(B|A)*P(A) + P(B|A^c)*P(A^c)=P(B|A)*P(A) +[1-P(B^c|A^c)]*[1-P(A)] = 0.8*0.9+0.25*0.1 =0.745
 $$
 $$P(A|B) = \frac{P(A)*P(B|A)}{P(B)} = 0.9*0.8/0.745 = 0.966$$
-## Conditional probabilities
 
-### Q1
+### Conditional probabilities
+
+#### Q1
 
 1. $$P(A|B) = \frac{P(A\cap B)}{P(B)} \\
 A\subseteq B\\
@@ -45,7 +46,9 @@ P(A|Ω)) = P(A)$$
 5. $$P(A\cap B\cap C) = P(A\cap (B\cap C)) = P(A|(B\cap C))P(B\cap C)\\ = P(A|(B\cap C))(P(B|C)P(C))\\=P(A|(B\cap C)*P(B|C)*P(C)$$
 6.$$P(A|B\cap C) = \frac{P(A\cap B\cap C)}{P(B|C)*P(C)}\\
 =\frac{P(B|A\cap C)*P(A|C)*P(C)}{P(B|C)*P(C)}\\=\frac{P(B|A\cap C)*P(A|C)}{P(B|C)}$$
-### Q2
+
+#### Q2
+
 $$P(A|B) = 0.3\\
 P(A|B^c) = 0.1\\
 P(B) = 0.2\\
@@ -54,8 +57,8 @@ P(A) = P(A|B) *P(B) + P(A|B^c)*P(B^c) \\=
 0.3*0.2 + 0.1*0.8 = 0.14\\
 P(A^c) = 0.86$$
 
-## Mutual independence and pair-wise independent
-### Q1 
+### Mutual independence and pair-wise independent
+#### Q1 
 
 $$A := \{(1,0,1),(1,1,0)\}, B := \{(0,1,1),(1,1,0)\} \\ C:=\{(0,1,1),(1,0,1)\}\\
 P(A) = P(B) = P(C) =1/2\\
@@ -65,13 +68,13 @@ P(C\cap B) = P(C) *P(B) = 1/4\\
 P(A\cap B\cap C) = 0$$
 it is pariwise-independent 
 
-## The Monty hall problem
-### Q1 (optional)
+### The Monty hall problem
+#### Q1 (optional)
 
-# Random variables and discrete random variables
+## Random variables and discrete random variables
 
-## Expectation and variance 
-### Q1
+### Expectation and variance 
+#### Q1
 
 
 $$Cov(X,Y) := E[(X-\overline{X})*(Y-\overline{Y})]\\
@@ -79,9 +82,9 @@ Cov(X,Y) := E(XY) - E(X)E(Y)\\
 = E(X)E(Y) - E(X)E(Y) = 0$$
 
 
-## Distributions
+### Distributions
 
-### Q1
+#### Q1
 
 1. $$ P_X({x}) =   \left\{
 \begin{array}{ll}
@@ -96,7 +99,7 @@ Cov(X,Y) := E(XY) - E(X)E(Y)\\
 3. $$Var(X):= E[(X-E(X))^2]=\alpha*(3-(3\alpha+10\beta))^2 + \beta*(10-(3\alpha+10\beta))^2+ (1-（\alpha + \beta))*(3\alpha+10\beta)^2$$
 4. $$SD = \sqrt{Var(X)}$$
 
-### Q2
+#### Q2
 
 1. $$P_X(X)= P(X\in S)= P(X\in S\cap \{0,3,10\}) =\\ \frac{1}{3}\sum_{x\in \{0,3,10\}}1_S(X)$$
 2. 
@@ -108,10 +111,12 @@ Cov(X,Y) := E(XY) - E(X)E(Y)\\
 \end{array} 
 \right.  $$
 
-### Q3 
+#### Q3 
 
 $$Var(Y):= E[(Y-E(Y))^2]=\frac{1}{n^2}\sum(\alpha*(3-(3\alpha+10\beta))^2 + \beta*(10-(3\alpha+10\beta))^2+ (1-（\alpha + \beta))*(3\alpha+10\beta)^2)$$
-### Q4
+
+
+#### Q4
 
 
 ```{r}
