@@ -96,7 +96,7 @@ Cov(X,Y) := E(XY) - E(X)E(Y)\\
 \right.  $$
 
 2. $$E(X):= \sum_{x\in\{0,3,10\}}x*p_X(x)=3\alpha +10\beta$$
-3. $$Var(X):= E[(X-E(X))^2]=\alpha*(3-(3\alpha+10\beta))^2 + \beta*(10-(3\alpha+10\beta))^2+ (1-（\alpha + \beta))*(3\alpha+10\beta)^2$$
+3. $$Var(X):= E[(X-E(X))^2]=\alpha*(3-(3\alpha+10\beta))^2 + \beta*(10-(3\alpha+10\beta))^2+ (1-（\alpha + \beta))*(3\alpha+10 \beta)^2$$
 4. $$SD = \sqrt{Var(X)}$$
 
 #### Q2
@@ -113,7 +113,9 @@ Cov(X,Y) := E(XY) - E(X)E(Y)\\
 
 #### Q3 
 
-$$Var(Y):= E[(Y-E(Y))^2]=\frac{1}{n^2}\sum(\alpha*(3-(3\alpha+10\beta))^2 + \beta*(10-(3\alpha+10\beta))^2+ (1-（\alpha + \beta))*(3\alpha+10\beta)^2)$$
+$$
+Var(X) = E(X^2)-E(X)^2 = (9\alpha+100\beta)-(3\alpha+10\beta)^2
+$$
 
 
 #### Q4
