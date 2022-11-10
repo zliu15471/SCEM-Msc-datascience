@@ -171,6 +171,7 @@ Y_t<-samples_Xi_t[1,]*0+samples_Xi_t[2,]*3+samples_Xi_t[3,]*10
 
 samples_Y_t = data.frame(Y_t)
 
+
 ggplot(samples_Y_t,aes(Y_t))+geom_bar()
 
 ```
