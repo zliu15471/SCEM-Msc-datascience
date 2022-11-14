@@ -13,4 +13,88 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tidyverse)
 ```
+## Contunuous random variables and limit laws
+### Simulating data with the uniform distribution
+
+
+#### Q1 
+
+$$p_U(x) =   \left\{
+\begin{array}{ll}
+      1 &x\in [0,1] \\
+      0&otherwise\\
+\end{array} 
+\right.$$
+$$P(X\in[a,b]) = \int_{a}^{b}p_U(x)dx = 1 *length ([a,b]\cap[0,1]) = b-a$$
+
+#### Q2
+
+```{r}
+set.seed(0) 
+n <- 1000 
+sample_X <- data.frame(U=runif(n)) %>% 
+  mutate(X=case_when(
+    (0<=U)&(U<0.25)~3,
+    (0.25<=U)&(U<0.5)~10, 
+    (0.5<=U)&(U<=1)~0)) %>% 
+  pull(X)
+```
+
+Because the sample follows the distributions of Gaussian random variable, which is also called distribution
+
+#### Q3 
+
+```{r}
+sample_X_0310<-function(a,b,n){
+n <- n
+sample_X_0310 <- data.frame(U=runif(n)) %>%
+  mutate(X=case_when( (0<=U)&(U<a)~3,
+          (a<=U)&(U<(a+b))~10,
+          ((a+b)<=U)&(U<=1)~0))
+return(sample_X_0310)
+}
+
+```
+
+#### Q4
+
+```{r}
+sample_X_0310(0.5,0.1,10000)
+
+```
+```{r}
+average<- data.frame((sample_X_0310(0.5,0.1,10000)[,1])*(sample_X_0310(0.5,0.1,10000)[,2]))
+
+```
+
+
+```{r}
+mean_sample<- sum(average)/10000
+mean_sample
+
+```
+Based on assignment 5 section 2.1, the value of Expectation X is 3*0.5 + 0.1*10 =2.5
+
+The law if large numbers tells us that the sample average converges towards the expectation, for sequences of independent and identically distributed random varaibles.
+
+#### Q5
+
+```{r}
+var(average)
+```
+
+Var(X) is: 9*0.5 +100*0.1-9*0.5*0.5-100*0.1*0.1-60*0.5*0.1 = 8.25
+
+
+#### Q6
+
+```{r}
+
+
+
+
+
+```
+
+
 
