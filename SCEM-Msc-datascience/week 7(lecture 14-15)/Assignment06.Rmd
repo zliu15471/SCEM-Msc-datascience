@@ -86,29 +86,328 @@ Var(X) is: 9*0.5 +100*0.1-9*0.5*0.5-100*0.1*0.1-60*0.5*0.1 = 8.25
 ```{r}
 
 beta<-seq(0.01,0.9,length = 100)
-beta
+
+class(beta)
 ```
+
+2.
 ```{r}
-sample_X_0310_new<-function(a,b){
+sample_X_0310_new<-function(b){
 n <- 100
 sample_X_0310 <- data.frame(U=runif(n)) %>%
-  mutate(X=case_when( (0<=U)&(U<a)~3,
-          (a<=U)&(U<(a+b))~10,
-          ((a+b)<=U)&(U<=1)~0))
-return(sample_X_0310)
+  mutate(X=case_when( 
+    (0<=U)&(U<0.1)~3,
+    (0.1<=U)&(U<(0.1+b))~10,
+    ((0.1+b)<=U)&(U<=1)~0))%>% 
+  pull(X)
 }
 
-```
-
-2. 
-```{r}
-data_frame_X<- data.frame(beta)
 
 ```
+
+
 3. 
 ```{r}
+samplemean<-beta%>%
+  map(~ mean(sample_X_0310_new(beta)))
+
+```
+```{r}
+samplemean<-data.frame(samplemean)
+
+samplemean<-t(samplemean)
+
+```
+
+
+4.
+```{r}
+
+Expectation<-beta%>%
+  map(~ mean(3*0.1 + beta*10))
+Expectation<-c(Expectation)
+
+Expectation<-data.frame(Expectation)
+Expectation<-t(Expectation)
+```
+
+```{r}
+data_frame_X<- data.frame(beta,Expectation,samplemean)
+
+```
+
+#### Q7
+
+```{r}
+  library(ggplot2)
+```
+
+```{r}
+
+ggplot(data_frame_X,aes(beta,samplemean)) + geom_line()
+```
+### Exponential distribution
+
+#### Q1
+
+$$P_\lambda(x) = \int_{-\infty}^{\infty}p_\lambda(x)dx =  1-0 =1$$
+
+#### Q2
+
+
+```{r}
+my_cdf_exp<-function(x,lambda){
+  if(x<0){
+  return(0)
+  }
+  else{
+    return(1-10^-(lambda*x))
+  }
+}
+```
+
+
+```{r}
+lambda <- 1/2 
+map_dbl(.x=seq(-1,4), .f=~my_cdf_exp(x=.x,lambda=lambda) )
+```
+```{r}
+
+test_inputs <- seq(-1,10,0.1) 
+my_cdf_output <- map_dbl(.x=test_inputs, .f=~my_cdf_exp(x=.x,lambda=lambda)) 
+inbuilt_cdf_output <- map_dbl(.x=test_inputs,.f=~pexp(q=.x,rate=lambda)) all.equal(my_cdf_output,inbuilt_cdf_output)
+```
+
+#### Q3
+
+```{r}
+my_quantile_exp<-function(x,lambda){
+
+  y<-1/my_cdf_exp(x,lambda)
+  
+}
+```
+
+```{r}
+
+test_inputs <- seq(0.01,0.99,0.01) 
+my_cdf_output <- map_dbl(.x=test_inputs, .f=~my_quantile_exp(x=.x,lambda=lambda)) 
+inbuilt_cdf_output <- map_dbl(.x=test_inputs,.f=~qexp(q=.x,rate=lambda)) all.equal(my_cdf_output,inbuilt_cdf_output)
+
+```
+
+#### Q4
+
+The mean of population is ?
+
+### The Binomial distribution and the central limit theorem
+
+
+#### Q1
+
+$$
+P(Z=z) = p^z*(1-p)^(1-z),z =0,1\\
+E(Z) = \sum_{z = 0}^{1} z P(z) = \sum_{z = 0}^{1} z P^z(1-p)^(1-z) = 0+p = p$$
+$$E(Z^2) = \sum_{z = 0}^{1} z^2 P(z) = \sum_{z = 0}^{1} z^2 p^z (1-p)^(1-z) = 0+p = p $$
+$$Var(Z) = E(Z^2)-(E(Z))^2 = p-p^2$$
+
+#### Q2
+
+1.
+```{r}
+
+x <- seq(0,50,by =1)
+
+pmf<- dbinom(x,size = 50,prob = 0.7)
+
+binom_df<-data.frame(x,pmf)
+```
+2. 
+
+```{r}
+head(binom_df,3)
+```
+
+
+#### Q3
+
+
+```{r}
+x<-seq(0,50,by =0.01)
+
+pdf<-dnorm(x,mean = 35,sd = 3.24)
+
+gaussian_df<-data.frame(x,pdf)
+
+head(gaussian_df)
+```
+
+#### Q4
+
+```{r}
+
+colors<-c("Gaussianpdf"="red","Binomialpmf"="blue") 
+fill<-c("Gaussianpdf"="white","Binomialpmf"="white") 
+
+
+ggplot()+labs(x="x",y="Probability")+theme_bw()+ 
+  geom_line(data=gaussian_df,aes(x,y=pdf,color="Gaussianpdf"),size=2)+ 
+  geom_col(data=binom_df,aes(x=x,y=pmf,color="Binomialpmf",fill="Binomialpmf"))+ 
+  scale_color_manual(name="myLegend",values=colors)+ scale_fill_manual(name="myLegend",values=fill)+ xlim(c(20,50))
+
+```
+### The Guassian distribution
+
+#### Q1
+
+```{r}
+
+
+x <- seq(-10, 10, by = .1)
+y <- dnorm(x, mean=1, sd=1)
+y_1<-dnorm(x, mean=1, sd=1.41)
+y_2<-dnorm(x, mean=1, sd=1.73)
+plot(x, y,type = 'l',col='red')
+lines(x, y_1,col='green')
+lines(x, y_2,col='blue')
+
+```
+
+#### Q2
+
+```{r}
+x <- seq(-10, 10, by = .1)
+y <- pnorm(x, mean=1, sd=1)
+y_1<-pnorm(x, mean=1, sd=1.41)
+y_2<-pnorm(x, mean=1, sd=1.73)
+plot(x, y,type = 'l',col='red')
+lines(x, y_1,col='green')
+lines(x, y_2,col='blue')
+```
+
+
+#### Q3
+
+
+```{r}
+x <- seq(-10, 10, by = .1)
+y <- qnorm(dnorm(x, mean=1, sd=1))
+y_1<-qnorm(dnorm(x, mean=1, sd=1.41))
+y_2<-qnorm(dnorm(x, mean=1, sd=1.73))
+plot(x, y,type = 'l',col='red')
+lines(x, y_1,col='green')
+lines(x, y_2,col='blue')
+
+
+```
+reciprocal
+
+
+
+#### Q4
+
+
+```{r}
+set.seed(0)
+standardGaussianSample<-c(rnorm(100, mean = 0,sd=1))
+
+```
+
+
+#### Q5
+
+```{r}
+
+mean1Var3GaussianSampleA<-
+
 
 
 ```
 
+#### Q6
+
+
+```{r}
+
+```
+
+#### Q7
+
+```{r}
+
+```
+
+
+## Location estimators with Gaussian data
+
+```{r}
+set.seed(0) 
+num_trials_per_sample_size <- 1000 
+min_sample_size <- 30 
+max_sample_size <- 500 
+sample_size_inc <- 5 
+mu_0 <- 1 
+sigma_0 <- 3 
+
+
+simulation_df<-crossing(trial=seq(num_trials_per_sample_size), 
+                        sample_size=seq(min_sample_size, 
+                                        max_sample_size,sample_size_inc)) %>%
+  mutate(simulation=pmap(.l=list(trial,sample_size),
+                         .f=~rnorm(.y,mean=mu_0,sd=sigma_0))) %>%
+  mutate(sample_md=map_dbl(.x=simulation,.f=median)) %>%
+  group_by(sample_size)%>%
+  summarise(msq_error_md=mean((sample_md-mu_0)^2))
+
+
+
+```
+
+#### Q1
+
+
+```{r}
+median(simulation_df$msq_error_md)
+```
+
+#### Q2
+
+```{r}
+simulation_df<-crossing(trial=seq(num_trials_per_sample_size), 
+                        sample_size=seq(min_sample_size, 
+                                        max_sample_size,sample_size_inc)) %>%
+  mutate(simulation=pmap(.l=list(trial,sample_size),
+                         .f=~rnorm(.y,mean=mu_0,sd=sigma_0))) %>%
+  mutate(sample_md=map_dbl(.x=simulation,.f=median)) %>%
+  group_by(sample_size)%>%
+  summarise(msq_error_md=mean((sample_md-mu_0)^2))
+ 
+
+
+
+```
+
+
+```{r}
+
+simulation_df_mean<-crossing(trial=seq(num_trials_per_sample_size), 
+                        sample_size=seq(min_sample_size, 
+                                        max_sample_size,sample_size_inc)) %>%
+  mutate(simulation=pmap(.l=list(trial,sample_size),
+                         .f=~rnorm(.y,mean=mu_0,sd=sigma_0))) %>%
+  mutate(sample_mn=map_dbl(.x=simulation,.f=mean)) %>%
+  group_by(sample_size)%>%
+  summarise(msq_error_mn=mean((sample_mn-mu_0)^2))
+
+
+
+```
+
+```{r}
+x <- simulation_df$sample_size
+y <- simulation_df$msq_error_md
+y_1<- simulation_df_mean$msq_error_mn
+plot(x, y,type = 'l',col='red')
+lines(x,y_1,col ='green')
+```
 
