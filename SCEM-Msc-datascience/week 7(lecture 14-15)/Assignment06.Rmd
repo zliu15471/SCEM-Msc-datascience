@@ -48,10 +48,11 @@ Because the sample follows the distributions of Gaussian random variable, which 
 sample_X_0310<-function(a,b,n){
 n <- n
 sample_X_0310 <- data.frame(U=runif(n)) %>%
-  mutate(X=case_when( (0<=U)&(U<a)~3,
-          (a<=U)&(U<(a+b))~10,
-          ((a+b)<=U)&(U<=1)~0))
-return(sample_X_0310)
+  mutate(X=case_when( 
+    (0<=U)&(U<a)~3,
+    (a<=U)&(U<(a+b))~10,
+    ((a+b)<=U)&(U<=1)~0))%>% 
+  pull(X)
 }
 
 ```
@@ -63,16 +64,10 @@ sample_X_0310(0.5,0.1,10000)
 
 ```
 ```{r}
-average<- data.frame((sample_X_0310(0.5,0.1,10000)[,1])*(sample_X_0310(0.5,0.1,10000)[,2]))
-
+average<- mean(sample_X_0310(0.5,0.1,10000))
+average
 ```
 
-
-```{r}
-mean_sample<- sum(average)/10000
-mean_sample
-
-```
 Based on assignment 5 section 2.1, the value of Expectation X is 3*0.5 + 0.1*10 =2.5
 
 The law if large numbers tells us that the sample average converges towards the expectation, for sequences of independent and identically distributed random varaibles.
@@ -80,21 +75,40 @@ The law if large numbers tells us that the sample average converges towards the 
 #### Q5
 
 ```{r}
-var(average)
+var(sample_X_0310(0.5,0.1,10000))
 ```
 
 Var(X) is: 9*0.5 +100*0.1-9*0.5*0.5-100*0.1*0.1-60*0.5*0.1 = 8.25
 
 
 #### Q6
-
+1.
 ```{r}
 
-
-
-
+beta<-seq(0.01,0.9,length = 100)
+beta
+```
+```{r}
+sample_X_0310_new<-function(a,b){
+n <- 100
+sample_X_0310 <- data.frame(U=runif(n)) %>%
+  mutate(X=case_when( (0<=U)&(U<a)~3,
+          (a<=U)&(U<(a+b))~10,
+          ((a+b)<=U)&(U<=1)~0))
+return(sample_X_0310)
+}
 
 ```
 
+2. 
+```{r}
+data_frame_X<- data.frame(beta)
+
+```
+3. 
+```{r}
+
+
+```
 
 
