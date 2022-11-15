@@ -106,35 +106,25 @@ sample_X_0310 <- data.frame(U=runif(n)) %>%
 ```
 
 
-3. 
 ```{r}
-samplemean<-beta%>%
-  map(~ mean(sample_X_0310_new(beta)))
-
-```
-```{r}
-samplemean<-data.frame(samplemean)
-
-samplemean<-t(samplemean)
+Expectation<-function(b){
+  return(mean(3*0.1 + b*10))
+}
 
 ```
 
-
-4.
 ```{r}
 
-Expectation<-beta%>%
-  map(~ mean(3*0.1 + beta*10))
-Expectation<-c(Expectation)
+data_frame_X<-data.frame(beta)
 
-Expectation<-data.frame(Expectation)
-Expectation<-t(Expectation)
 ```
-
 ```{r}
-data_frame_X<- data.frame(beta,Expectation,samplemean)
-
+data_frame_X%>%
+  mutate(samplemean=map_dbl(.x=beta,.f=~mean(sample_X_0310_new(b=.x))))%>%
+  mutate(Expectation=map_dbl(.x=beta,.f=~Expectation(b=.x)))
 ```
+
+
 
 #### Q7
 
@@ -144,7 +134,13 @@ data_frame_X<- data.frame(beta,Expectation,samplemean)
 
 ```{r}
 
-ggplot(data_frame_X,aes(beta,samplemean)) + geom_line()
+x<-data_frame_X$beta
+y<-data_frame_X$samplemean
+y_1<-data_frame_X$Expectation
+
+plot(x,y,col="red")
+lines(x,y_1,col="green")
+
 ```
 ### Exponential distribution
 
@@ -175,7 +171,7 @@ map_dbl(.x=seq(-1,4), .f=~my_cdf_exp(x=.x,lambda=lambda) )
 
 test_inputs <- seq(-1,10,0.1) 
 my_cdf_output <- map_dbl(.x=test_inputs, .f=~my_cdf_exp(x=.x,lambda=lambda)) 
-inbuilt_cdf_output <- map_dbl(.x=test_inputs,.f=~pexp(q=.x,rate=lambda)) all.equal(my_cdf_output,inbuilt_cdf_output)
+
 ```
 
 #### Q3
@@ -192,7 +188,6 @@ my_quantile_exp<-function(x,lambda){
 
 test_inputs <- seq(0.01,0.99,0.01) 
 my_cdf_output <- map_dbl(.x=test_inputs, .f=~my_quantile_exp(x=.x,lambda=lambda)) 
-inbuilt_cdf_output <- map_dbl(.x=test_inputs,.f=~qexp(q=.x,rate=lambda)) all.equal(my_cdf_output,inbuilt_cdf_output)
 
 ```
 
@@ -317,8 +312,6 @@ standardGaussianSample<-c(rnorm(100, mean = 0,sd=1))
 #### Q5
 
 ```{r}
-
-mean1Var3GaussianSampleA<-
 
 
 
