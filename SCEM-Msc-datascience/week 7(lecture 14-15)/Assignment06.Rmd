@@ -141,6 +141,9 @@ y_1<-data_frame_X$Expectation
 plot(x,y,col="red")
 lines(x,y_1,col="green")
 
+
+
+
 ```
 ### Exponential distribution
 
