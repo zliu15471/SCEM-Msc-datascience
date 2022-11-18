@@ -45,14 +45,14 @@ Because the sample follows the distributions of Gaussian random variable, which 
 #### Q3 
 
 ```{r}
-sample_X_0310<-function(a,b,n){
-n <- n
-sample_X_0310 <- data.frame(U=runif(n)) %>%
+sample_X_0310<-function(alpha,beta,n){
+sample_X <- data.frame(U=runif(n)) %>%
   mutate(X=case_when( 
-    (0<=U)&(U<a)~3,
-    (a<=U)&(U<(a+b))~10,
-    ((a+b)<=U)&(U<=1)~0))%>% 
+    (0<=U)&(U<alpha)~3,
+    (alpha<=U)&(U<(alpha+beta))~10,
+    ((alpha+beta)<=U)&(U<=1)~0))%>% 
   pull(X)
+  return(sample_X)
 }
 
 ```
@@ -60,7 +60,12 @@ sample_X_0310 <- data.frame(U=runif(n)) %>%
 #### Q4
 
 ```{r}
-sample_X_0310(0.5,0.1,10000)
+# answer
+n<-10000
+alpha<- 1/2
+beta<- 1/10
+sample_X<-sample_X_0310(alpha,beta,n)
+mean(sample_X)
 
 ```
 ```{r}
@@ -73,6 +78,10 @@ Based on assignment 5 section 2.1, the value of Expectation X is 3*0.5 + 0.1*10 
 The law if large numbers tells us that the sample average converges towards the expectation, for sequences of independent and identically distributed random varaibles.
 
 #### Q5
+```{r}
+#answer
+var(sample_X)
+```
 
 ```{r}
 var(sample_X_0310(0.5,0.1,10000))
@@ -124,9 +133,16 @@ data_frame_X%>%
   mutate(Expectation=map_dbl(.x=beta,.f=~Expectation(b=.x)))
 ```
 
+```{r}
+#### Q7 answer
+n=100 
+alpha=1/10 
+samples<-data.frame(beta=seq(0,9/10,0.01))%>%
+  mutate(sample_X=map(beta,~sample_X_0310(alpha,.x,n)))%>%
+  mutate(samplemean=map_dbl(sample_X,mean))%>%
+  mutate(Expectation=3*alpha+10*beta)
+```
 
-
-#### Q7
 
 ```{r}
   library(ggplot2)
@@ -145,6 +161,19 @@ lines(x,y_1,col="green")
 
 
 ```
+
+
+```{r}
+#answer
+
+df<-samples%>%
+  pivot_longer(cols=c(samplemean,Expectation), names_to='name',values_to='value')
+
+ggplot(df,aes(x=beta,y=value,color=name))+ geom_point()+theme_bw()
+```
+
+
+
 ### Exponential distribution
 
 #### Q1
@@ -159,9 +188,8 @@ my_cdf_exp<-function(x,lambda){
   if(x<0){
   return(0)
   }
-  else{
-    return(1-10^-(lambda*x))
-  }
+
+    return(1-exp(-lambda*x))
 }
 ```
 
@@ -174,6 +202,8 @@ map_dbl(.x=seq(-1,4), .f=~my_cdf_exp(x=.x,lambda=lambda) )
 
 test_inputs <- seq(-1,10,0.1) 
 my_cdf_output <- map_dbl(.x=test_inputs, .f=~my_cdf_exp(x=.x,lambda=lambda)) 
+inbuilt_cdf_output <- map_dbl(.x=test_inputs,.f=~pexp(q=.x,rate=lambda)) 
+all.equal(my_cdf_output,inbuilt_cdf_output)
 
 ```
 
@@ -181,16 +211,20 @@ my_cdf_output <- map_dbl(.x=test_inputs, .f=~my_cdf_exp(x=.x,lambda=lambda))
 
 ```{r}
 my_quantile_exp<-function(x,lambda){
-
-  y<-1/my_cdf_exp(x,lambda)
+  if (p<=0) return(-Inf)
+  return(log(1-p)/(-lambda))
   
 }
 ```
 
 ```{r}
+test_inputs <- seq(0.01, 0.99, 0.01) 
 
-test_inputs <- seq(0.01,0.99,0.01) 
-my_cdf_output <- map_dbl(.x=test_inputs, .f=~my_quantile_exp(x=.x,lambda=lambda)) 
+my_quantile_output <- map_dbl(.x=test_inputs, .f=~my_quantile_exp(p=.x,lambda=lambda)) 
+
+inbuilt_quantile_output <- map_dbl(.x=test_inputs,.f=~qexp(p=.x,rate=lambda))
+
+all.equal(my_quantile_output,inbuilt_quantile_output)
 
 ```
 
@@ -206,8 +240,8 @@ The mean of population is ?
 $$
 P(Z=z) = p^z*(1-p)^(1-z),z =0,1\\
 E(Z) = \sum_{z = 0}^{1} z P(z) = \sum_{z = 0}^{1} z P^z(1-p)^(1-z) = 0+p = p$$
-$$E(Z^2) = \sum_{z = 0}^{1} z^2 P(z) = \sum_{z = 0}^{1} z^2 p^z (1-p)^(1-z) = 0+p = p $$
-$$Var(Z) = E(Z^2)-(E(Z))^2 = p-p^2$$
+$$E(Z^2) = \sum_{z = 0}^{1} z^2 P(z) = \sum_{z = 0}^{1} z^2 p^z (1-p)^(1-z) = 0+p = np $$
+$$Var(Z) = E(Z^2)-(E(Z))^2 = n(p-p^2)$$
 
 #### Q2
 
@@ -271,6 +305,27 @@ lines(x, y_2,col='blue')
 
 ```
 
+```{r}
+
+f_musigma <-function(mu, sigma, x){ 
+  y = (1/sigma/sqrt(2*pi)) * exp(-0.5*((x-mu)/sigma)^2)
+  return (y) 
+  } 
+df_density <- data.frame( x = seq(-4, 6, 0.1) )%>%
+  mutate( '1' = f_musigma(mu=1,sigma=1,x=x), '2' = f_musigma(mu=1,sigma=sqrt(2),x=x), '3' = f_musigma(mu=1,sigma=sqrt(3),x=x) ) 
+
+df_density_longer = pivot_longer(df_density, col = c('1','2','3'), names_to = 'Variance', values_to = 'Density')
+
+ggplot(df_density_longer, aes(x=x, y = Density, linetype=Variance, color=Variance)) + geom_line() + theme_bw()
+
+
+```
+
+
+
+
+
+
 #### Q2
 
 ```{r}
@@ -282,13 +337,23 @@ plot(x, y,type = 'l',col='red')
 lines(x, y_1,col='green')
 lines(x, y_2,col='blue')
 ```
+```{r}
+# Answer
+df<-data.frame(x=seq(-4,6,0.1))%>%
+  mutate('1'=pnorm(mean=1,sd=1,q=x), '2'=pnorm(mean=1,sd=sqrt(2),q=x), '3'=pnorm(mean=1,sd=sqrt(3),q=x))
+
+df_longer=pivot_longer(df,col=c('1','2','3'), names_to='Variance',values_to='CDF')
+
+ggplot(df_longer,aes(x=x,y=CDF,linetype=Variance,color=Variance))+ geom_line()+theme_bw()+ylab('Cumulativedistributionfunction')
+
+```
 
 
 #### Q3
 
 
 ```{r}
-x <- seq(-10, 10, by = .1)
+x <- seq(0, 1, by = 0.005)
 y <- qnorm(dnorm(x, mean=1, sd=1))
 y_1<-qnorm(dnorm(x, mean=1, sd=1.41))
 y_2<-qnorm(dnorm(x, mean=1, sd=1.73))
@@ -299,6 +364,19 @@ lines(x, y_2,col='blue')
 
 ```
 reciprocal
+```{r}
+#answer
+
+df<-data.frame(x=seq(0,1,0.005))%>%
+  mutate('1'=qnorm(mean=1,sd=1,p=x), 
+         '2'=qnorm(mean=1,sd=sqrt(2),p=x), 
+         '3'=qnorm(mean=1,sd=sqrt(3),p=x)) 
+
+df_longer=pivot_longer(df,col=c('1','2','3'), names_to='Variance',values_to='Quantile')
+
+ggplot(df_longer,aes(x=x,y=Quantile,linetype=Variance,color=Variance))+ 
+  geom_line()+theme_bw()
+```
 
 
 
@@ -307,8 +385,8 @@ reciprocal
 
 ```{r}
 set.seed(0)
-standardGaussianSample<-c(rnorm(100, mean = 0,sd=1))
-
+standardGaussianSample<-rnorm(100, mean = 0,sd=1)
+head(standardGaussianSample)
 ```
 
 
@@ -316,7 +394,9 @@ standardGaussianSample<-c(rnorm(100, mean = 0,sd=1))
 
 ```{r}
 
+mean1Var3GaussianSampleA= standardGaussianSample*sqrt(3) + 1
 
+head(mean1Var3GaussianSampleA)
 
 ```
 
@@ -324,12 +404,34 @@ standardGaussianSample<-c(rnorm(100, mean = 0,sd=1))
 
 
 ```{r}
-
+set.seed(0) 
+mean1Var3GaussianSampleB = rnorm(100, mean=1, sd=sqrt(3)) 
+head(mean1Var3GaussianSampleB)
 ```
+
+```{r}
+all.equal(mean1Var3GaussianSampleA, mean1Var3GaussianSampleB)
+```
+
+
 
 #### Q7
 
 ```{r}
+
+colors<-c("Population density"="red", "Sample kernel density"="blue",
+          "Population mean"="green", "Sample mean"="violet") 
+linetypes<-c("Population density"="solid", "Sample kernel density"="dashed", "Population mean"="solid", "Sample mean"="dashed") 
+ggplot() + labs(x="x",y="Density") + theme_bw() + 
+  # 1. create plot of theoretical density 
+  geom_line(data=select(df_density, x, "3"), aes(x=x,y=`3`,color="Population density", linetype="Population density")) + 
+  # 2. add in kernel density plot from real sample 
+  geom_density(data=data.frame(x=mean1Var3GaussianSampleA), aes(x=x,color="Sample kernel density", linetype="Sample kernel density")) + 
+  # 3. vertical lines 
+  geom_vline(aes(xintercept=1,color="Population mean", linetype="Population mean")) + geom_vline(aes(xintercept=mean(mean1Var3GaussianSampleA),color="Sample mean",linetype="Sample mean")) +
+  
+  scale_color_manual(name = "Legend", values=colors) + scale_linetype_manual(name="Legend", values=linetypes)
+
 
 ```
 
@@ -405,5 +507,44 @@ y <- simulation_df$msq_error_md
 y_1<- simulation_df_mean$msq_error_mn
 plot(x, y,type = 'l',col='red')
 lines(x,y_1,col ='green')
+```
+```{r}
+#answer
+set.seed(0) 
+num_trials_per_sample_size<-1000 
+min_sample_size<-30 
+max_sample_size<-500 
+sample_size_inc<-5 
+mu_0<-1 
+sigma_0<-3 
+
+#createdataframeofallpairsofsample_sizeandtrial
+
+simulation_df<-crossing(trial=seq(num_trials_per_sample_size), sample_size=seq(min_sample_size, max_sample_size,sample_size_inc))%>%
+  #simulatesequencesofGaussianrandomvariables
+  
+  mutate(simulation=pmap(.l=list(trial,sample_size), .f=~rnorm(.y,mean=mu_0,sd=sigma_0)))%>%
+  
+  #computethesamplemedians
+  
+  mutate(sample_md=map_dbl(.x=simulation,.f=median))%>% mutate(sample_mn=map_dbl(.x=simulation,.f=mean))%>%
+  group_by(sample_size) %>%
+  
+  summarise(msq_error_md=mean((sample_md-mu_0)^2),msq_error_mn=mean((sample_mn-mu_0)^2))
+
+
+```
+
+
+```{r}
+
+simulation_df%>%
+  pivot_longer(cols=c(msq_error_md,msq_error_mn), names_to="Estimator",values_to="msq_error")%>%
+  mutate(Estimator=case_when(Estimator=="msq_error_md"~"Median", Estimator=="msq_error_mn"~"Mean"))%>%
+  
+  ggplot(aes(x=sample_size,y=msq_error,color=Estimator,linetype=Estimator))+ geom_smooth()+theme_bw()+xlab("Samplesize")+ylab("Meansquareerror")
+
+
+
 ```
 
