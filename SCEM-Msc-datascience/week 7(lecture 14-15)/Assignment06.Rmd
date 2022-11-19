@@ -545,6 +545,5 @@ simulation_df%>%
   ggplot(aes(x=sample_size,y=msq_error,color=Estimator,linetype=Estimator))+ geom_smooth()+theme_bw()+xlab("Samplesize")+ylab("Meansquareerror")
 
 
-
 ```
 
