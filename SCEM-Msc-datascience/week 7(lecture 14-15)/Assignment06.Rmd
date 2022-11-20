@@ -422,6 +422,7 @@ all.equal(mean1Var3GaussianSampleA, mean1Var3GaussianSampleB)
 colors<-c("Population density"="red", "Sample kernel density"="blue",
           "Population mean"="green", "Sample mean"="violet") 
 linetypes<-c("Population density"="solid", "Sample kernel density"="dashed", "Population mean"="solid", "Sample mean"="dashed") 
+
 ggplot() + labs(x="x",y="Density") + theme_bw() + 
   # 1. create plot of theoretical density 
   geom_line(data=select(df_density, x, "3"), aes(x=x,y=`3`,color="Population density", linetype="Population density")) + 
