@@ -9,4 +9,21 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r}
+library(tidyverse)
+```
+
+## Maximum likelihood estimates
+
+### Maximum likelihood estimates for Red tailed hawks 
+
+```{r}
+library(Stat2Data)
+data("Hawks")
+```
+
+#### Q1
+
+
+
 
