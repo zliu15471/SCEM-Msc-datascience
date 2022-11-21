@@ -47,11 +47,398 @@ dim(RedTailedDf)
 
 ```{r}
 
+# estimate of mu and sigma
 
+mu<-mean(RedTailedDf$Tail)
+sigma<-sd(RedTailedDf$Tail)*sqrt(576/577)
+
+
+mu
+sigma
+```
+
+#### Q3
+
+
+```{r}
+
+weights<- seq(mu-3*sigma,mu+3*sigma,sigma*0.001)
+
+colors<- c("MLE density" = "red","Kernel density"="blue")
+
+estimated_density = data.frame(
+  Weight = weights,
+  Density = dnorm(weights, mean = mu,sd = sigma)
+)
+
+
+plot_obj<- ggplot() + geom_line(data =estimated_density,
+                                aes(x = Weight, y= Density, color = "MLE density"))
+
+
+plot_obj + geom_density(data = RedTailedDf,
+                        aes(x =RedTailedDf$Tail, color = "Kernel density")) + labs(y="Density function",color = "Estimator") + theme_bw() + scale_color_manual(values = colors)
+
+```
+
+### Unbiased estimation of the population variance 
+
+#### Q1
+
+```{r}
+
+
+num_trials<-1000 # set the number of trials
+set.seed(0) # set the random seed
+sampling_simulation<-data.frame(trial=1:num_trials) %>%
+  mutate(sample_size = map(.x=trial, ~sample(c(5,100),5, replace = TRUE)))
 
 
 
 ```
+
+
+#### Q2
+
+
+
+```{r}
+
+```
+
+
+### Maximum likelihood estimation with the Possion distribution
+
+
+#### Q1
+
+The natural log likelihood function:
+
+$$logl(\lambda) = -n\lambda + ln(\lambda)\sum_{i = 1}^{n} X_i-\sum_{i = 1}^{n}ln(X_i!)$$
+derivative natural log likelihood function 
+
+$$\frac{\partial}{\partial \lambda}logl(\lambda) =-n + \frac{1}{\lambda}\sum_{i = 1}^{n}X_i = -n+ \frac{n}{\lambda}\overline{X}$$
+
+
+#### Q2
+
+$$-n+ \frac{n}{\lambda}\overline{X} = 0 \\
+\lambda = \overline{X}$$
+
+
+#### Q3
+
+```{r}
+
+set.seed(0)
+
+poisson_data <- data.frame('data' = rpois(1000, 0.5))
+
+poisson_data %>% ggplot() + 
+  geom_histogram(aes(x = data, 
+                     y = stat(count / sum(count))), 
+                     color = 'black',
+                 binwidth = 1) +
+  geom_vline(xintercept = 0.5, 
+             size = 1, 
+             linetype = 'dashed',
+             color = 'red') +
+  theme_bw() +
+  labs(x = 'Number of successes per period',
+       y = 'Proportion',
+       title = '1,000 samples of Pois(lambda = 0.5)')
+
+
+```
+
+
+#### Q4
+
+
+```{r}
+
+
+Von_df<-read.csv("VonBortkiewicz.csv",header = TRUE,sep =",")
+
+head(Von_df)
+```
+```{r}
+dim(Von_df)
+mean(Von_df$fatalities)
+```
+
+```{r}
+data<-Von_df$fatalities
+dpois(data[1],lambda = 1)
+```
+
+```{r}
+lambda_values <- seq(-5, 5,by = 0.1)
+likelihood <- dpois(data[1], lambda = lambda_values)
+
+# arranged into a data frame
+lh_single <- data.frame(lambda_values = lambda_values, likelihood = likelihood )
+
+lh_single %>% 
+  ggplot(aes(x = lambda_values,y = likelihood))+
+  geom_point(size = 1, color = "blue")+
+  labs(title = "Likelihood of a single data point over multiple lambda values",
+       subtitle = "(we will look for a maximum)",
+       caption = "Math 32",
+       x = "lambda",
+       y = "likelihood") +
+  theme_bw()
+```
+
+### Maximum likehood estimation for the exponential distribution
+
+
+#### Q1
+
+$$\lambda_0 = \frac{1}{\overline{X}}$$
+
+#### Q2
+
+```{r}
+
+CP_df<-read.csv("CustomerPurchase.csv",header = TRUE,sep =",")
+
+dim(CP_df)
+
+```
+```{r}
+time_d<-data.frame(CP_df$Time)
+time_d
+```
+
+```{r}
+
+for (i in 1:nrow(time_d)){
+  time_d[i,] <- time_d[i+1,]-time_d[i,]
+}
+```
+
+```{r}
+time_d = as.numeric(as.character(time_d$CP_df.Time)) 
+```
+```{r}
+
+CP_df%>%
+  mutate(time_diffs = lead(time_d))
+
+
+```
+
+#### Q3
+
+
+
+```{r}
+
+x<-CP_df$Purchase
+
+nloglik<- function(x,theta) sum(-dexp(x=x,rate=theta,log=T))
+
+optimize(f=nloglik,x=x,interval = c(0,1000))$minimum
+
+
+```
+
+```{r}
+1/mean(x)
+```
+
+
+#### Q4
+
+
+
+
+## Confidence intervals 
+
+### Student's t-confidence intervals
+
+
+#### Q1
+
+does not change
+wider
+narrower
+
+
+
+#### Q2
+
+
+```{r}
+x<-c(RedTailedDf$Weight)
+
+m<-mean(x,na.rm = TRUE)
+s<-sd(x,na.rm = TRUE)
+l<-length(x)
+```
+```{r}
+
+error<- qt(0.99,df= l-1)*s/sqrt(l)
+
+left<-m-error
+right<- m+error
+left
+right
+```
+
+
+#### Q3
+
+```{r}
+
+
+ggplot(data = RedTailedDf,aes(x=x)) + geom_density() + theme_bw()
+
+
+```
+```{r}
+ggplot(data = RedTailedDf,aes(sample=x)) +theme_bw() +stat_qq()
++ stat_qq_line(color = "blue")
+
+```
+
+
+
+
+### Investigating coverage for Student's intervals
+
+#### Q1 
+
+
+```{r}
+student_t_confidence_interval<-function(sample,confidence_level){ 
+  sample<-sample[!is.na(sample)] #removeanymissingvalues 
+  n<-length(sample) #computesamplesize 
+  mu_est<-mean(sample) #computesamplemean 
+  sig_est<-sd(sample) #computesamplesd 
+  alpha=1-confidence_level #alphafromgamma 
+  t<-qt(1-alpha/2,df=n-1) #getstudenttquantile 
+  l=mu_est-(t/sqrt(n))*sig_est #lower 
+  u=mu_est+(t/sqrt(n))*sig_est #upper 
+  return(c(l,u)) }
+```
+
+
+```{r}
+
+
+num_trials<-100000 
+sample_size<-30 
+mu_0<-1 
+sigma_0<-3 
+alpha<-0.05 
+set.seed(0) #setrandomseedforreproducibility
+
+
+single_alpha_coverage_simulation_df<-data.frame(trial=seq(num_trials))%>%
+  #generaterandomGaussiansamples:
+  mutate(sample=map(.x=trial,.f=~rnorm(n=sample_size,mean=mu_0,sd=sigma_0)))%>% 
+  #generateconfidenceintervals:
+  mutate(ci_interval=map(.x=sample,.f=~student_t_confidence_interval(.x,1-alpha)))%>%
+  #checkifintervalcoversmu_0:
+  mutate(cover=map_lgl(.x=ci_interval,.f=~((min(.x)<=mu_0)&(max(.x)>=mu_0))))%>% 
+  #computeintervallength:
+  mutate(ci_length=map_dbl(.x=ci_interval,.f=~(max(.x)-min(.x))))
+
+
+
+#estimateofcoverageprobability:
+single_alpha_coverage_simulation_df%>% 
+  pull(cover)%>%
+  mean()
+
+
+```
+
+
+
+
+## One sample hypothesis testing
+
+### One sample t-test on penguins data
+
+#### Q1 
+
+```{r}
+
+
+library(palmerpenguins)
+
+data(package = 'palmerpenguins')
+
+head(penguins)
+
+```
+
+
+```{r}
+bill_adelie<-penguins%>%
+  filter(species == 'Adelie')%>%
+  select(bill_length_mm)
+bill_adelie<-bill_adelie$bill_length_mm
+
+```
+
+
+
+```{r}
+
+sample_size<-length(bill_adelie)
+
+sample_mean<-mean(bill_adelie,na.rm = TRUE)
+
+sample_sd<-sd(bill_adelie,na.rm = TRUE)
+
+test_statistic<-(sample_mean-40)/(sample_sd/sqrt(sample_size))
+
+
+test_statistic
+```
+
+```{r}
+# compute the p-value
+2*(1-pt(abs(test_statistic),df = sample_size-1))
+```
+
+
+
+
+```{r}
+t.test(x=bill_adelie,mu = 40)
+```
+
+```{r}
+
+alpha<-0.01
+t<-qt(1-alpha/2,df = sample_size-1)
+confidence_interval_l<-sample_mean-t*sample_sd/sqrt(sample_size)
+confidence_interval_u<-sample_mean+t*sample_sd/sqrt(sample_size)
+confidence_interval<-c(confidence_interval_l,confidence_interval_u)
+
+
+confidence_interval
+
+
+```
+
+### Implementing a one-sample t-test
+
+
+#### Q1
+
+```{r}
+
+t.test(x=bill_adelie,mu =40,alternative = "two.sided")
+
+
+```
+
 
 
 
