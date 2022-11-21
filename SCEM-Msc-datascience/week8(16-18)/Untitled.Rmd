@@ -20,10 +20,38 @@ library(tidyverse)
 ```{r}
 library(Stat2Data)
 data("Hawks")
+
+
 ```
 
 #### Q1
 
+
+```{r}
+
+RedTailedDf<-Hawks%>%
+  filter(Species == 'RT')%>%
+  select(Weight,Tail,Wing)
+
+
+head(RedTailedDf,5)
+
+```
+```{r}
+dim(RedTailedDf)
+```
+
+
+#### Q2
+
+
+```{r}
+
+
+
+
+
+```
 
 
 
