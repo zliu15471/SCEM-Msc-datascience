@@ -90,9 +90,13 @@ plot_obj + geom_density(data = RedTailedDf,
 
 num_trials<-1000 # set the number of trials
 set.seed(0) # set the random seed
-sampling_simulation<-data.frame(trial=1:num_trials) %>%
+sampling_simulation<-data.frame(trial=seq(num_trials)) %>%
   mutate(sample_size = map(.x=trial, ~sample(c(5,100),5, replace = TRUE)))
 
+
+
+#mle_x<-sum((sampling_simulation-mean(sampling_simulation))^2) / (sample_size)
+#v<-x<-sum((sampling_simulation-mean(sampling_simulation))^2) / (sample_size-1)
 
 
 ```
@@ -208,7 +212,7 @@ dim(CP_df)
 ```
 ```{r}
 time_d<-data.frame(CP_df$Time)
-time_d
+
 ```
 
 ```{r}
@@ -298,8 +302,7 @@ ggplot(data = RedTailedDf,aes(x=x)) + geom_density() + theme_bw()
 
 ```
 ```{r}
-ggplot(data = RedTailedDf,aes(sample=x)) +theme_bw() +stat_qq()
-+ stat_qq_line(color = "blue")
+ggplot(data = RedTailedDf,aes(sample=x)) +theme_bw() +stat_qq()+ stat_qq_line(color = "blue")
 
 ```
 
