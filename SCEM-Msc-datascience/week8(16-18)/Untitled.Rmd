@@ -88,18 +88,55 @@ plot_obj + geom_density(data = RedTailedDf,
 ```{r}
 
 
-num_trials<-1000 # set the number of trials
-set.seed(0) # set the random seed
-sampling_simulation<-data.frame(trial=seq(num_trials)) %>%
-  mutate(sample_size = map(.x=trial, ~sample(c(5,100),5, replace = TRUE)))
+set.seed(0) 
+sample_size_seq<-seq(5,100,5) 
+num_trials_per_size<-1000 
+mu_0<-1 
+sigma_0<-3 
+
+compute_V_mle <-function(x){return(mean((x-mean(x))^2))}
+
+compute_V_U<-function(x){ n<-length(x)
+
+return(compute_V_mle(x)*n/(n-1)) } 
+
+df<-crossing(sample_size=sample_size_seq,trials=seq(num_trials_per_size))%>% 
+  #createsamples
+  mutate(samples=map(sample_size,~rnorm(.x,mean=mu_0,sd=sigma_0)))%>% 
+  #computeV_mle
+  mutate(V_mle=map_dbl(samples,compute_V_mle))%>%
+  #computeV_U 
+  mutate(V_U=map_dbl(samples,compute_V_U))
+
+
+#computebias 
+df_bias<-df%>%
+  group_by(sample_size)%>%
+  summarise(V_mle_bias=mean(V_mle)-sigma_0^2,V_U_bias=mean(V_U)-sigma_0^2)
 
 
 
-#mle_x<-sum((sampling_simulation-mean(sampling_simulation))^2) / (sample_size)
-#v<-x<-sum((sampling_simulation-mean(sampling_simulation))^2) / (sample_size-1)
+
+
 
 
 ```
+
+```{r}
+df_bias_longer<-df_bias%>% pivot_longer(c(V_mle_bias,V_U_bias),names_to='Estimator',values_to='Bias')%>%
+  #changethenameswhichwillbedisplayedasLegendoftheplot
+  mutate(Estimator=case_when(Estimator=='V_mle_bias'~'MLE', Estimator=='V_U_bias'~'Unbiasedestimator'))
+
+
+df_bias_longer%>%
+  ggplot(aes(x=sample_size,y=Bias,color=Estimator))+geom_line()+ theme_bw()+xlab('SampleSize')
+
+
+```
+
+
+
+
 
 
 #### Q2
@@ -107,6 +144,38 @@ sampling_simulation<-data.frame(trial=seq(num_trials)) %>%
 
 
 ```{r}
+set.seed(0) 
+sample_size_seq<-seq(5,100,5) 
+num_trials_per_size<-10000 
+mu_0<-1 
+sigma_0<-3
+
+compute_V_mle<-function(x){return(mean((x-mean(x))^2))}
+compute_V_U<-function(x){ 
+  n<-length(x)
+return(compute_V_mle(x)*n/(n-1)) }
+
+
+df<-crossing(sample_size=sample_size_seq,trials=seq(num_trials_per_size))%>% 
+  #createsamples
+  mutate(samples=map(sample_size,~rnorm(.x,mean=mu_0,sd=sigma_0)))%>% 
+  #computeV_U_sqrt
+  mutate(V_U_sqrt=map_dbl(samples,~sqrt(compute_V_U(.x))))
+
+
+#computebias
+
+df_bias<-df%>%group_by(sample_size)%>% summarise(V_U_sqrt_bias=mean(V_U_sqrt)-sigma_0)
+
+df_bias_longer<-df_bias%>% pivot_longer(c(V_U_sqrt_bias),names_to='Estimator',values_to='Bias')%>% 
+  #changethenameswhichwillbedisplayedasLegendoftheplot
+  mutate(Estimator=case_when(Estimator=='V_U_sqrt_bias'~'sqrt(V_U)'))
+
+
+df_bias_longer%>%
+  ggplot(aes(x=sample_size,y=Bias,color=Estimator))+geom_line()+ theme_bw()+xlab('SampleSize')
+
+
 
 ```
 
