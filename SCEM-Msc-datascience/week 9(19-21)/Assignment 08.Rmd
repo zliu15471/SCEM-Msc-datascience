@@ -278,10 +278,79 @@ False
 ## Investigating test size for an unpaired student's t-test
 
 
+```{r}
+
+num_trials<-10000 
+sample_size<-30 
+mu_0<-1 
+mu_1<-1 
+sigma_0<-3 
+sigma_1<-3 
+alpha<-0.05
+set.seed(0)
+
+
+single_alpha_test_size_simulation_df <- data.frame(trial=seq(num_trials)) %>%
+  # generate random Gaussian samples 
+  # generate p values # type I error
+  mutate(sample_0=map(.x=trial,.f=~rnorm(n=sample_size,mean=mu_0,sd=sigma_0)), sample_1=map(.x=trial,.f=~rnorm(n=sample_size,mean=mu_1,sd=sigma_1))) %>%
+  mutate(p_value=pmap(.l=list(trial,sample_0,sample_1), .f=~t.test(..2,..3,var.equal = TRUE)$p.value))%>% 
+  mutate(type_1_error=p_value<alpha)
+
+single_alpha_test_size_simulation_df %>% 
+  pull(type_1_error) %>%
+  mean() # estimate of coverage probabilit
+
+
+```
+
+
+#### Q1
+
+
+```{r}
+
+
+significant_a<-function(a){
+  
+num_trials<-10000 
+sample_size<-30 
+mu_0<-1 
+mu_1<-1 
+sigma_0<-3 
+sigma_1<-3 
+alpha<-a
+set.seed(0)
+  
+single_alpha_test_size_simulation_df <- data.frame(trial=seq(num_trials)) %>%
+  # generate random Gaussian samples 
+  # generate p values # type I error
+  mutate(sample_0=map(.x=trial,.f=~rnorm(n=sample_size,mean=mu_0,sd=sigma_0)), sample_1=map(.x=trial,.f=~rnorm(n=sample_size,mean=mu_1,sd=sigma_1))) %>%
+  mutate(p_value=pmap(.l=list(trial,sample_0,sample_1), .f=~t.test(..2,..3,var.equal = TRUE)$p.value))%>% 
+  mutate(type_1_error=p_value<alpha)
+
+size<-single_alpha_test_size_simulation_df %>% 
+  pull(type_1_error) %>%
+  mean() # estimate of coverage probabilit
+
+return(size)
+
+}
+
+```
+
+
+```{r}
+significant_a(0.05)
+```
+
+
+```{r}
 
 
 
 
 
+```
 
 
