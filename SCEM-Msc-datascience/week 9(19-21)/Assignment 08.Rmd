@@ -66,14 +66,221 @@ head(Barley,4)
 
 ```
 
-### Q1
+#### Q1
 
 ```{r}
 t.test(x =Barley$Glabron,y =Barley$Velvet,paired = TRUE )
 ```
 The p-value is 0.0118 which is above the significant level of 0.01. Thus we do not reject the null hypothesis
 
-### Q2
+#### Q2
+
+```{r}
+y_bar<-mean(Barley$Glabron-Barley$Velvet)
+s<- sd(Barley$Glabron-Barley$Velvet)
+effect_size<-y_bar/s
+effect_size
+```
+
+
+#### Q3
+
+1. Subjects must be independent. Measurements for one subject do not affect measurements for any other subject.
+2. Each of the paired measurements must be obtained from the same subject. For example, the before-and-after weight for a smoker in the example above must be from the same person.
+3. The measured differences are normally distributed
+
+
+
+## Implementing unpaired t-test
+
+```{r}
+library(palmerpenguins) 
+peng_AC<-penguins %>% 
+  drop_na(species,body_mass_g) %>% 
+  filter(species !="Gentoo") 
+head(peng_AC %>% 
+       select(species, flipper_length_mm, body_mass_g), 5)
+```
+
+
+
+#### Q1
+
+
+```{r}
+val_col <- "body_mass_g" 
+group_col <- "species" 
+data <- peng_AC 
+data_new <- data %>%
+  # rename the columns; note that you can not drop the "!!" (why?)
+  rename(group=(!!group_col),val=(!!val_col))%>%
+  group_by(group) %>% 
+  drop_na(val) %>%
+  summarise(mn =val)
+  
+
+data_new
+
+```
+```{r}
+data_new$mn[2]
+```
+
+```{r}
+t_test_function<-function(data=peng_AC,group_col="body_mass_g",val_col = "species"){
+
+val_col <- "body_mass_g" 
+group_col <- "species" 
+data <- peng_AC 
+
+data_new <- data %>% 
+    # rename the columns; note that you can not drop the "!!" (why?)
+    rename(group=(!!group_col),val=(!!val_col))%>%
+    group_by(group) %>% 
+    drop_na(val) %>% 
+    summarise(mn=mean(val),sd = sd(val),n=length(val))
+  
+sd_combined<-sqrt(((data_new$n[1]-1)*data_new$sd[1]^2 + (data_new$n[2]-1)*data_new$sd[2]^2)/(data_new$n[1]+data_new$n[2]))
+
+t_statistic<- (data_new$mn[1]-data_new$mn[2])/(sd_combined*sqrt(1/data_new$n[1]+1/data_new$n[2]))
+
+
+p_value<-2*(1-pt(abs(t_statistic),df = data_new$n[1]+data_new$n[2]))
+
+effect_size<- (data_new$mn[1]-data_new$mn[2])/(data_new$sd[1]-data_new$sd[2])
+  
+output_df<- data.frame(t_statistic,p_value,effect_size)
+
+
+return(output_df)
+}
+```
+
+
+```{r}
+
+
+t_test_function(data=peng_AC,group_col="body_mass_g",val_col = "species")
+
+
+```
+
+#### Q2
+
+```{r}
+
+t_test_function<-function(data=peng_AC,group_col="body_mass_g",val_col = "species",val_equal=FALSE){
+
+val_col <- "body_mass_g" 
+group_col <- "species" 
+data <- peng_AC 
+
+data_new <- data %>% 
+    # rename the columns; note that you can not drop the "!!" (why?)
+    rename(group=(!!group_col),val=(!!val_col))%>%
+    group_by(group) %>% 
+    drop_na(val) %>% 
+    summarise(mn=mean(val),sd = sd(val),n=length(val))
+
+
+welch_test<-t.test(data_new$group~data_new$mn, data = data_new)
+
+
+return(welch_test)
+
+
+}
+```
+
+```{r}
+# cannot figure out 
+#t_test_function(data=peng_AC,val_col="body_mass_g",group_col="species", val_equal=FALSE)
+```
+
+
+## Useful concepts in statistical hypothesis testing
+
+
+
+#### Q1
+
+1. Null hypothesis
+
+A null hypothesis is a type of statistical hypothesis that proposes that no statistical significance exists in a set of given observations. 
+
+2. Alternative hypothesis
+
+The alternative hypothesis (HA) is the other answer to your research question. It claims that there’s an effect in the population.
+
+Your alternative hypothesis is the same as your research hypothesis. In other words, it’s the claim that you expect or hope will be true.
+
+
+3. Test statistic
+
+A test statistic is a statistic (a quantity derived from the sample) used in statistical hypothesis testing. A hypothesis test is typically specified in terms of a test statistic, considered as a numerical summary of a data-set that reduces the data to one value that can be used to perform the hypothesis test.
+
+
+4. Type 1 error
+
+A Type I error means rejecting the null hypothesis when it’s actually true. It means concluding that results are statistically significant when, in reality, they came about purely by chance or because of unrelated factors.
+
+
+5. Type 2 error
+
+A Type II error means not rejecting the null hypothesis when it’s actually false. This is not quite the same as “accepting” the null hypothesis, because hypothesis testing can only tell you whether to reject the null hypothesis.
+
+Instead, a Type II error means failing to conclude there was an effect when there actually was. In reality, your study may not have had enough statistical power to detect an effect of a certain size.
+
+
+6. The size of a test
+
+In statistics, the size of a test is the probability of falsely rejecting the null hypothesis. That is, it is the probability of making a type I error. It is denoted by the Greek letter α (alpha).
+
+
+7. The power of a test
+
+The power of a hypothesis test is the probability that the test correctly rejects the null hypothesis.
+That is, the probability of a true positive result. It is only useful when the null hypothesis is rejected.
+
+
+8. The significance level
+
+The significance level is the probability of rejecting the null hypothesis when it is true. For example, a significance level of 0.05 indicates a 5% risk of concluding that a difference exists when there is no actual difference. 
+
+
+9. The p-value
+
+
+The P value is defined as the probability under the assumption of no effect or no difference (null hypothesis), of obtaining a result equal to or more extreme than what was actually observed
+
+
+10. Effect size
+
+
+Effect size tells you how meaningful the relationship between variables or the difference between groups is. It indicates the practical significance of a research outcome. A large effect size means that a research finding has practical significance, while a small effect size indicates limited practical applications.
+
+
+
+
+#### Q2
+
+
+False
+
+1. It needs consider the assumption of no effect or no difference (null hypothesis), of obtaining a result equal to or more extreme than what was actually observed
+
+2. No . Statistical significance doesn’t tell us about magnitude of difference
+
+
+
+
+
+## Investigating test size for an unpaired student's t-test
+
+
+
+
+
 
 
 
