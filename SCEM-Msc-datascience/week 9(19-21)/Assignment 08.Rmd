@@ -341,16 +341,256 @@ return(size)
 
 
 ```{r}
-significant_a(0.05)
+significant_a(0.01)
+```
+
+
+```{r}
+
+sample_size<-seq(0.01, 0.5, 0.01)
+
+df_size<-data.frame(sample_size)
+df_importance<-df_size%>%
+  mutate(importance_a=map(sample_size, ~significant_a(.x)) )
+
+```
+
+```{r}
+
+df_importance$importance_a=as.numeric(df_importance$importance_a)
+
+ggplot(df_importance,aes(x=sample_size,y=importance_a))+geom_point()+ theme_bw()+xlab('SampleSize')+ylab('significant level')
+
+```
+
+
+
+## The statistical power of an unpaired t-test
+
+```{r}
+num_trials<-10000 
+n_0<-30 
+n_1<-30 
+mu_0<-3 
+mu_1<-4 
+sigma_0<-2 
+sigma_1<-2 
+alpha<-0.05 
+set.seed(0) 
+
+
+data.frame(trial=seq(num_trials)) %>%
+  mutate(sample_0 = map(.x=trial,.f =~ rnorm(n=n_0,mean=mu_0,sd=sigma_0)), sample_1 = map(.x=trial,.f =~ rnorm(n=n_1,mean=mu_1,sd=sigma_1))) %>% 
+  
+  mutate(p_value=pmap(.l = list(trial,sample_0,sample_1), .f =~ t.test(..2, ..3, var.equal = TRUE)$p.value)) %>% mutate(reject_null = p_value<alpha ) %>% pull(reject_null) %>% 
+  mean()
+
+```
+
+
+#### Q1
+
+
+```{r}
+
+significant_level<-function(a){
+  
+  
+num_trials<-10000 
+n_0<-30 
+n_1<-30 
+mu_0<-3 
+mu_1<-4 
+sigma_0<-2 
+sigma_1<-2 
+alpha<-a 
+set.seed(0) 
+  
+
+result<-data.frame(trial=seq(num_trials)) %>%
+  mutate(sample_0 = map(.x=trial,.f =~ rnorm(n=n_0,mean=mu_0,sd=sigma_0)), sample_1 = map(.x=trial,.f =~ rnorm(n=n_1,mean=mu_1,sd=sigma_1))) %>% 
+  mutate(p_value=pmap(.l = list(trial,sample_0,sample_1), .f =~ t.test(..2, ..3, var.equal = TRUE)$p.value)) %>% mutate(reject_null = p_value<alpha ) %>% 
+  pull(reject_null) %>%
+  mean()
+  
+return(result)
+  
+
+}
+
+
+```
+
+```{r}
+sample_size<-seq(0.01, 0.5, 0.01)
+
+df_size<-data.frame(sample_size)
+df_importance_level<-df_size%>%
+  mutate(importance_a=map(sample_size, ~significant_level(.x)) )
+
+
+df_importance_level$importance_a=as.numeric(df_importance_level$importance_a)
+
+ggplot(df_importance_level,aes(x=sample_size,y=importance_a))+geom_line()+ theme_bw()+xlab('significant level')+ylab('statistic power')
+
+
+```
+
+#### Q2
+
+
+
+```{r}
+mean_dff<-function(m0,m1){
+  
+  
+num_trials<-10000 
+n_0<-30 
+n_1<-30 
+mu_0<-m0 
+mu_1<-m1 
+sigma_0<-2 
+sigma_1<-2 
+alpha<-0.05 
+set.seed(0) 
+  
+
+result<-data.frame(trial=seq(num_trials)) %>%
+  mutate(sample_0 = map(.x=trial,.f =~ rnorm(n=n_0,mean=mu_0,sd=sigma_0)), sample_1 = map(.x=trial,.f =~ rnorm(n=n_1,mean=mu_1,sd=sigma_1))) %>% 
+  mutate(p_value=pmap(.l = list(trial,sample_0,sample_1), .f =~ t.test(..2, ..3, var.equal = TRUE)$p.value)) %>% mutate(reject_null = p_value<alpha ) %>% 
+  pull(reject_null) %>%
+  mean()
+  
+return(result)
+  
+
+}
+
+```
+
+
+
+
+```{r}
+
+m0<-seq(1, 10, 0.5)
+diff_m<-seq(1,10,0.5)
+m1<-m0+diff_m
+
+
+df_size<-data.frame(m0,m1,diff_m)
+df_mean<-df_size%>%
+  mutate(importance_a=map2_dbl(m0,m1, ~mean_dff(.x,.y)) )
+
+
+
+ggplot(df_mean,aes(x=diff_m,y=importance_a))+geom_line()+ theme_bw()+xlab('mean difference')+ylab('statistic power')
+
+
+```
+
+
+
+#### Q3
+
+
+
+```{r}
+
+standard_dff<-function(s0,s1){
+  
+  
+num_trials<-10000 
+n_0<-30 
+n_1<-30 
+mu_0<-3 
+mu_1<-4 
+sigma_0<-s0 
+sigma_1<-s1 
+alpha<-0.05 
+set.seed(0) 
+  
+
+result<-data.frame(trial=seq(num_trials)) %>%
+  mutate(sample_0 = map(.x=trial,.f =~ rnorm(n=n_0,mean=mu_0,sd=sigma_0)), sample_1 = map(.x=trial,.f =~ rnorm(n=n_1,mean=mu_1,sd=sigma_1))) %>% 
+  mutate(p_value=pmap(.l = list(trial,sample_0,sample_1), .f =~ t.test(..2, ..3, var.equal = TRUE)$p.value)) %>% mutate(reject_null = p_value<alpha ) %>% 
+  pull(reject_null) %>%
+  mean()
+  
+return(result)
+  
+
+}
 ```
 
 
 ```{r}
 
 
+s0<-seq(1, 10, 0.5)
+diff_m<-seq(1,10,0.5)
+s1<-s0+diff_m
+
+
+df_size<-data.frame(s0,s1,diff_m)
+df_stad<-df_size%>%
+  mutate(importance_a=map2_dbl(s0,s1, ~standard_dff(.x,.y)) )
+
+
+
+ggplot(df_stad,aes(x=s0,y=importance_a))+geom_line()+ theme_bw()+xlab('sd')+ylab('statistic power')
+```
+
+
+#### Q4
+
+
+```{r}
+
+
+size_dff<-function(n){
+  
+num_trials<-10000 
+n_0<-n 
+n_1<-n 
+mu_0<-3 
+mu_1<-4 
+sigma_0<-2 
+sigma_1<-2 
+alpha<-0.05 
+set.seed(0) 
+  
+
+result<-data.frame(trial=seq(num_trials)) %>%
+  mutate(sample_0 = map(.x=trial,.f =~ rnorm(n=n_0,mean=mu_0,sd=sigma_0)), sample_1 = map(.x=trial,.f =~ rnorm(n=n_1,mean=mu_1,sd=sigma_1))) %>% 
+  mutate(p_value=pmap(.l = list(trial,sample_0,sample_1), .f =~ t.test(..2, ..3, var.equal = TRUE)$p.value)) %>% mutate(reject_null = p_value<alpha ) %>% 
+  pull(reject_null) %>%
+  mean()
+  
+return(result)
+  
+
+}
 
 
 
 ```
+
+
+```{r}
+
+
+n<-seq(20, 80, 1)
+
+df_size<-data.frame(n)
+df_se<-df_size%>%
+  mutate(importance_a=map_dbl(n, ~size_dff(.x)) )
+
+
+
+ggplot(df_se,aes(x=n,y=importance_a))+geom_line()+ theme_bw()+xlab('size')+ylab('statistic power')
+
+```
+
 
 
