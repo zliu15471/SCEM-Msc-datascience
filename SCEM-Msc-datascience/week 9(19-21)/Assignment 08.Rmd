@@ -9,5 +9,66 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r}
+library(tidyverse)
+```
+
+
+## Obstacles to valid scientific inference
+
+### Q1
+
+
+1. Measurement distortions
+
+your data has errors
+
+Measurement error is very common in practice
+- Miscalibration of measurement instruments e.g. a clock running slightly too fast or slow.
+- Rounding errors due to computational constraints e.g. 0.904 converted to 0.9.
+- Inaccurate responses to questionnaires e.g. under reporting alcohol consumption.
+- Human error e.g. data entry mistakes
+
+2. Selection bias
+
+Selection bias occurs when the data included in the analysis misrepresents the underlying population of interest.
+sample bias, self-selection bias, attrition bias, and post-hoc selection
+
+sample bias: You want to know what the most popular genre (jazz, folk, rock …) is amongst attendees of a music festival
+
+self selection bias: online reviews of restaurants might disproportionately represent subsets of the population with strong opinions or certain age groups
+
+attrition bias:A scientist is investigating the efficacy of a new exercise program
+
+post hoc selection: A scientist is investigating the efficacy of medical treatment
+
+
+Randomized samples: sampling from the population of interest which is the set of all attendees of a music festival
+
+
+3. Confounding variables
+
+Correlation does not imply causation
+
+Example: the increased sales of sun glass may not be the reason for the increased sales of ice cream, but the sunny weather is
+
+
+## paired t-test and effect size
+
+```{r}
+
+library(PairedData)
+data("Barley")
+detach('package:PairedData',unload = TRUE)
+detach('package:MASS', unload = TRUE)
+
+head(Barley,4)
+
+```
+
+### Q1
+
+
+
 
 
