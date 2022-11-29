@@ -578,7 +578,7 @@ return(result)
 
 
 ```{r}
-
+ 
 
 n<-seq(20, 80, 1)
 
