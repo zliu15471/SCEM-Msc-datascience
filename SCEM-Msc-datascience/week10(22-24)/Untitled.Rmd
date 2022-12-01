@@ -10,5 +10,83 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
+## Basic concepts in classification
+
+```{r}
+library(tidyverse)
+```
+
+
+#### Q1
+
+1. A classification rule
+
+Given a feature vector and a set of categories, we want to assign a class label taken from the categories to the feature vecrtor according to which class it belongs to. 
+Exp: The food was fantastic.
+
+2. A learning algrithm
+
+A learning algorithm is a set of instructions used in machine learning that allows a computer program to imitate the way a human gets better at characterizing some types of information. 
+Exp: regression, classfication
+
+
+3. Training data
+
+Training data is used to teach prediction models that use machine learning algorithms how to extract features that are relevant to specific business goals.
+Exp: for supervised ml, the training dataset is labeled.
+
+4. Feature vector 
+feature vectors are used to represent numeric or symbolic characteristics, called features, of an object in a mathematical, easily analyzable way
+Exp: [x1,x2,x3....]
+
+
+5. Label
+
+In machine learning, data labeling is the process of identifying raw data (images, text files, videos, etc.) and adding one or more meaningful and informative labels to provide context so that a machine learning model can learn from it
+Exp: sales = [x1,x2,x3....]
+
+
+6. Expected vector
+
+The expected value of a random vector (or matrix) is a vector (or matrix) whose elements are the expected values of the individual random variables that are the elements of the random vector.
+
+
+
+7. Train error
+
+Training error is the error that you get when you run the trained model back on the training data.
+
+Exp: mse
+
+
+8. The train test split
+
+The train-test split procedure is used to estimate the performance of machine learning algorithms when they are used to make predictions on data not used to train the model.
+
+
+
+
+## A chi-squared test of population variance
+
+
+#### Q1
+
+
+```{r}
+
+chi_square_test_one_sample_var<-function(sample){
+  
+  sigma_square_null<-
+  
+}
+
+
+```
+
+
+
+
+
+
 
 
