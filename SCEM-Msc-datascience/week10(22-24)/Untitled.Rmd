@@ -76,7 +76,7 @@ The train-test split procedure is used to estimate the performance of machine le
 
 chi_square_test_one_sample_var<-function(sample,sigma_square_null){
   
-  sample<-sample[!is.na(smaple)]
+  sample<-sample[!is.na(sample)]
   
   n<-length(sample)
   
@@ -96,12 +96,117 @@ chi_square_test_one_sample_var<-function(sample,sigma_square_null){
 #### Q2
 
 ```{r}
+num_trials<-10000
+sample_size<-100
+mu<-1
+sigma<-2
 
+set.seed(0)
+
+single_alpha_test_size_simulation_df <- data.frame(trial=seq(num_trials)) %>%
+  mutate(sample=map(.x=trial,.f=~rnorm(n=sample_size,mean=mu,sd=sigma))) %>%
+  mutate(p_value=map(.x=sample, .f=~chi_square_test_one_sample_var(.x,4)))
+
+alpha_list = seq(0.01,0.25,0.01)
+
+
+compute_test_size<- function(alpha){
+  
+  type_1_error = single_alpha_test_size_simulation_df$p_value<alpha
+  
+  return(mean(type_1_error))
+}
 
 
 ```
 
 
+
+```{r}
+multiple_alpha_test_size_simulation_df<-data.frame(alpha=alpha_list)%>%
+  mutate(test_size=map_dbl(alpha,compute_test_size))
+
+multiple_alpha_test_size_simulation_df%>%
+  ggplot(aes(x=alpha,y=test_size))+ geom_point()+xlab('significant level')+ylab('test size')+theme_bw()
+```
+
+#### Q4
+
+
+```{r}
+
+
+num_trials<-10000
+sample_size<-100
+mu<-1
+sigma<-2.45
+sigma_0<-2
+
+
+set.seed(0)
+
+single_alpha_power_df <- data.frame(trial=seq(num_trials)) %>%
+  mutate(sample=map(.x=trial,.f=~rnorm(n=sample_size,mean=mu,sd=sigma))) %>%
+  mutate(p_value=map(.x=sample, .f=~chi_square_test_one_sample_var(.x,4)))
+
+alpha_list = seq(0.01,0.25,0.01)
+
+
+compute_power<- function(alpha){
+  
+  reject_null<- single_alpha_power_df$p_value<alpha
+  
+  return(mean(reject_null))
+}
+
+
+```
+
+
+```{r}
+
+multiple_alpha_power_df<-data.frame(alpha=alpha_list)%>%
+  mutate(power=map_dbl(alpha,compute_power))
+
+multiple_alpha_power_df%>%
+  ggplot(aes(x=alpha,y=power))+ geom_point()+xlab('significant level')+ylab('power')+theme_bw()
+```
+
+
+
+#### Q5
+
+
+
+```{r}
+
+library(palmerpenguins)
+
+```
+
+
+
+```{r}
+
+
+bill_adelie<-penguins%>%
+  filter(species =='Adelie')%>%
+  select(bill_length_mm)
+  
+  
+
+```
+
+
+
+```{r}
+chi_square_test_one_sample_var(sample = bill_adelie,sigma_square_null=9)
+```
+
+The p-value is less than significant level
+
+
+## The train test split 
 
 
 
