@@ -74,17 +74,26 @@ The train-test split procedure is used to estimate the performance of machine le
 
 ```{r}
 
-chi_square_test_one_sample_var<-function(sample){
+chi_square_test_one_sample_var<-function(sample,sigma_square_null){
   
-  sigma_square_null<-NULL
+  sample<-sample[!is.na(smaple)]
   
+  n<-length(sample)
   
+  chi_squared_statistic<-(n-1)*var(sample)/sigma_square_null
+  
+  p_value<-2*min(pchisq(chi_squared_statistic,df=n-1),
+                 1-pchisq(chi_squared_statistic,df=n-1))
+
+  return(p_value)
   
 }
 
 
 ```
 
+
+#### Q2
 
 ```{r}
 
