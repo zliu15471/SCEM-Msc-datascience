@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(tidyverse)
+
 ```
 
 
@@ -207,6 +208,162 @@ The p-value is less than significant level
 
 
 ## The train test split 
+
+
+#### Q1
+
+
+```{r}
+library(Stat2Data)
+data(Hawks)
+```
+
+
+
+```{r}
+
+hawks_total<-Hawks%>%
+  select(Weight,Wing,Tail,Hallux,Species)%>%
+  filter(Species!="RT")%>%
+  drop_na()%>%
+  mutate(Species=as.numeric(Species=="SS"))
+  
+
+```
+
+
+####Q2
+
+
+```{r}
+
+num_total<-hawks_total%>%nrow()
+num_train<-floor(num_total*0.6)
+num_test<-num_total-num_train
+
+set.seed(1)
+test_inds<-sample(seq(num_total),num_test)
+train_inds<-setdiff(seq(num_total),test_inds)
+
+hawks_train<-hawks_total%>%
+  filter(row_number() %in% train_inds)
+
+hawks_test<-hawks_total%>%
+  filter(row_number() %in% test_inds)
+
+
+```
+
+
+
+
+#### Q3
+
+```{r}
+
+hawks_train_x<-hawks_train%>%select(-Species)
+hawks_train_y<-hawks_train%>%select(Species)
+
+
+hawks_test_x<-hawks_test%>%select(-Species)
+hawks_test_y<-hawks_test%>%select(Species)
+
+
+```
+
+
+
+
+#### Q4
+
+
+```{r}
+n_positive<-hawks_train_y%>%
+  filter(Species==1)
+
+Prob_train <-n_positive/194
+
+```
+
+
+#### Q5
+
+```{r}
+n_positive_test<-hawks_test_y%>%
+  filter(Species==1)
+
+
+prob_test<-n_positive_test/130
+```
+Based on the train and test, the test error should be 0.022  
+
+
+## Mutivariate distributions and parameter estimation 
+
+
+#### Q1
+
+
+```{r}
+hawks_rt<-Hawks%>%
+  filter(Species =='RT')%>%
+  select(Wing,Weight,Tail)%>%
+  drop_na()
+```
+
+
+#### Q2
+
+
+```{r}
+
+sigma_rt<- cov(hawks_rt,use = "complete.obs")
+sigma_rt
+
+```
+
+
+## Investigate hypotheis testing where the Gaussian model assumptions are violated
+
+
+#### Q1
+
+$$F_X(x) =F(a+1)-F(a) = (a+1)^2-2a(a+1)-(a^2-2a^2) = 1$$
+do not know how to compute the CDF.
+
+#### Q2
+
+```{r}
+
+
+generate_sample_X<-function(sample_size,mu){
+  
+  sample_U<-runif(sample_size)
+  generate_sample_X<-sample_U
+}
+
+return(generate_sample_X)
+
+
+```
+
+#### Q4
+
+
+```{r}
+
+set.seed(0)
+sample_size_seq<- seq(2,40,2)
+num_trials_per_size<-10000
+mu_0<-3
+mu_1<-3
+
+df<-crossing(sample_size=sample_size_seq,trials=seq(num_trials_per_size))
+
+
+
+```
+
 
 
 
