@@ -309,6 +309,8 @@ hawks_rt<-Hawks%>%
   filter(Species =='RT')%>%
   select(Wing,Weight,Tail)%>%
   drop_na()
+
+
 ```
 
 
