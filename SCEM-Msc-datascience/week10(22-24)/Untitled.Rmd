@@ -349,13 +349,11 @@ $$F_X^-1(p) = \begin{cases}
 ```{r}
 
 
-generate_sample_X<-function(sample_size,mu){
-  
-  sample_U<-runif(sample_size)
-  generate_sample_X<-sample_U
-}
-
-return(generate_sample_X)
+generate_sample_X <- function(sample_size, mu){ 
+  a <- mu-2/3 
+  sample_U <- runif(sample_size) 
+  sample_X <- sqrt(sample_U) + a 
+  }
 
 
 ```
@@ -364,19 +362,38 @@ return(generate_sample_X)
 
 
 ```{r}
+library(tidyverse)
+trials <- seq(10000) 
+sample_sizes <- seq(2, 40, 2) 
+significance_level <- 0.05 
+mu_0 <- 3 
+mu <- 3 
+set.seed(2) 
 
-set.seed(0)
-sample_size_seq<- seq(2,40,2)
-num_trials_per_size<-10000
-mu_0<-3
-mu_1<-3
 
-df<-crossing(sample_size=sample_size_seq,trials=seq(num_trials_per_size))
+df_simulated_t_test <- crossing(trials=trials,
+                                sample_sizes=sample_sizes) %>%
+  
+  mutate(sample=map(sample_sizes, ~generate_sample_X(.x, mu)))%>%
+  
+  
+  #mutate(sample=map(sample_sizes, ~rnorm(.x, mean=mu, sd=3) ) ) %>% 
+  
+  mutate(p_value = map_dbl(sample, ~t.test(.x, mu=mu_0, alternative="two.sided")$p.value)) %>%
+  mutate(reject=(p_value<significance_level)) 
+
+df_test_size <- df_simulated_t_test %>%
+  group_by(sample_sizes) %>% 
+  summarise(test_size=mean(reject))
 
 
 
 ```
 
+```{r}
+df_test_size %>% 
+  ggplot( aes(x=sample_sizes, y=test_size) ) + geom_point() + theme_bw() + xlab('sample size') + ylab('test size')
+```
 
 
 
