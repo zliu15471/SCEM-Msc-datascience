@@ -330,9 +330,20 @@ sigma_rt
 
 #### Q1
 
-$$F_X(x) =F(a+1)-F(a) = (a+1)^2-2a(a+1)-(a^2-2a^2) = 1$$
-do not know how to compute the CDF.
+$$u:=E(X) = \int_{a}^{a+1}x*2(x-a)dx = 2/3+a$$
+CDF:
 
+$$ F_X(x)=\begin{cases}
+(x-a)^2 & \text{if}\ x\in (a,a+1)\\
+1 & \text{if}\ x\ge a+1 \\
+0 & \text{if}\ x\le a 
+\end{cases}$$
+
+
+$$F_X^-1(p) = \begin{cases}
+-\infty & \text{if}\ p=0\\
+\sqrt{p}+a & \text{if}\ p\in (0,1] \\
+\end{cases}$$
 #### Q2
 
 ```{r}
