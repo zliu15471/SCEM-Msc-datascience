@@ -9,3 +9,31 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r}
+library(tidyverse)
+```
+
+## Linear Discriminant analysis
+
+#### Q1
+
+Let's fit a Gaussian distribution to the data from each of the two classes.
+
+Then we obtain a probabilistic model for the data. We can then use this probabilistic model to generate a rule based on the probability of the two classes.
+
+
+#### Q2
+
+
+```{r}
+library(Stat2Data)
+data(Hawks)
+
+hawks_total<- Hawks %>%
+  select(Weight,Wing,Hallux,Tail,Species)%>%
+  filter(Species=='SS'|Species =='CH')%>%
+  drop_na()%>%
+  mutate(Species =as.numeric(Species=='SS'))
+```
+
+
