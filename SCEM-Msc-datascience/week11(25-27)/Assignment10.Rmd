@@ -39,11 +39,254 @@ hawks_total<- Hawks %>%
 
 ```{r}
 
+num_total <- hawks_total %>% nrow()
+# number of penguin data 
+num_train <- floor(num_total*0.6) 
+# number of train examples
+num_test <- num_total-num_train 
+# number of test samples
+set.seed(0) # set random seed for reproducibility
 
+
+test_inds <- sample(seq(num_total),num_test) # random sample of test indicies 
+train_inds <- setdiff(seq(num_total),test_inds) # training data indicies
+
+hawks_train <- hawks_total %>% filter(row_number() %in% train_inds) # train data 
+hawks_test <- hawks_total %>% filter(row_number() %in% test_inds) # test data
+
+
+```
+
+
+```{r}
+lda_model<- MASS::lda(Species~ ., data = hawks_train)
+```
+
+```{r}
+
+lda_train_predicted<-predict(lda_model,hawks_train)$class%>%
+  as.character()%>%as.numeric()
+
+lda_train_error<-mean(abs(lda_train_predicted-hawks_train$Species))
+
+lda_train_error
+```
+
+```{r}
+
+lda_test_predicted<-predict(lda_model,hawks_test)$class%>%
+  as.character()%>%as.numeric()
+
+lda_test_error<-mean(abs(lda_test_predicted-hawks_test$Species))
+
+lda_test_error
+```
+
+
+## logistic regression
+
+#### Q1
+
+In logistic regression the target variable follow Bernoulli distribution. The probabilistic model is the probability mass function of Bernoulli distribution.
+
+#### Q2
+
+
+```{r}
+sigmoid = function(x) {
+   1 / (1 + exp(-x))
+}
+```
+```{r}
+x<- seq(-10,10,0.02)
+```
+
+```{r}
+plot(x,sigmoid(x),col ='blue')
+```
+
+#### Q3
+
+
+```{r}
+hawks_train_x<-hawks_train%>%select(-Species)
+hawks_train_y<-hawks_train%>%pull(Species)
+
+hawks_test_x<-hawks_test%>%select(-Species)
+hawks_test_y<-hawks_test%>%pull(Species)
+
+```
+
+
+
+```{r}
+library(glmnet)
+library(tidyr)
+logistic_model<- glmnet(x=hawks_train_x%>%as.matrix(),y=hawks_train_y,family = 'binomial',alpha =0,lambda=0)
+
+
+```
+
+
+
+```{r}
+logistic_train_predicted_y<-predict(logistic_model,
+                                    hawks_train_x%>%as.matrix(),type = "class")%>%as.integer()
+
+
+
+logistic_train_error<-mean(abs(logistic_train_predicted_y-hawks_train_y))
+
+
+logistic_train_error
+```
+
+
+```{r}
+logistic_test_predicted_y<-predict(logistic_model,
+                                    hawks_test_x%>%as.matrix(),type = "class")%>%as.integer()
+
+logistic_test_error<-mean(abs(logistic_test_predicted_y-hawks_test_y))
+
+
+
+logistic_test_error
+```
+
+
+## Basic concepts in regularisation
+
+
+
+#### Q1
+
+
+1. In machine learning, a hyperparameter is a parameter whose value is used to control the learning process. By contrast, the values of other parameters (typically node weights) are derived via training.
+
+Hyperparameters can be classified as model hyperparameters, that cannot be inferred while fitting the machine to the training set because they refer to the model selection task, or algorithm hyperparameters, that in principle have no influence on the performance of the model but affect the speed and quality of the learning process. An example of a model hyperparameter is the topology and size of a neural network. Examples of algorithm hyperparameters are learning rate and batch size as well as mini-batch size.
+
+
+2. Data validation means checking the accuracy and quality of source data before using, importing or otherwise processing data. Different types of validation can be performed depending on destination constraints or objectives. Data validation is a form of data cleansing. 
+
+
+3.Train test split is a model validation procedure that allows you to simulate how a model would perform on new/unseen data. Split the data set into two pieces — a training set and a testing set.Train the model on the training set and test the model on the testing set.
+
+
+#### Q2
+
+
+
+The length of a vector is most commonly measured by the "square root of the sum of the squares of the elements," also known as the Euclidean norm. It is called the 2-norm because it is a member of a class of norms known as p -norms。
+
+The L1 norm that is calculated as the sum of the absolute values of the vector.
+The L2 norm that is calculated as the square root of the sum of the squared vector values.
+
+
+#### Q3
+
+
+This is a regularization technique used in feature selection using a Shrinkage method also referred to as the penalized regression method. Lasso is short for Least Absolute Shrinkage and Selection Operator, which is used both for regularization and model selection. If a model uses the L1 regularization technique, then it is called lasso regression.
+
+
+Similar to the lasso regression, ridge regression puts a similar constraint on the coefficients by introducing a penalty factor. However, while lasso regression takes the magnitude of the coefficients, ridge regression takes the square.
+
+
+
+- Increasing in Ridge will only shrink parameters towards 0
+- Increasing in Lasso can shrink parameters 0 (natural feature selector).
+
+
+## An investigation into ridge regression for high-dimensional regression
+
+```{r}
+library(QSARdata) 
+data(MeltingPoint)
+```
+
+
+#### Q1
+
+```{r}
+mp_data_total<-MP_Descriptors %>%
+  mutate(melting_pt=MP_Outcome)
+```
+
+```{r}
+dim(mp_data_total)
+```
+
+```{r}
+head(mp_data_total)
+```
+variable numebrs: 893,403
+examples: 4401
+
+
+#### Q2
+
+```{r}
+
+num_total<-mp_data_total%>%nrow()
+num_train<-floor(0.5*num_total)
+num_validate<-floor(0.25*num_total)
+num_test<-num_total-num_train-num_validate
+
+
+```
+
+```{r}
+set.seed(123)
+
+test_inds<-sample(seq(num_total),num_test)
+validate_inds<-sample(setdiff(seq(num_total),test_inds),num_validate)
+
+train_inds<-setdiff(seq(num_total),union(validate_inds,test_inds))
+
+```
+
+
+```{r}
+
+mp_data_train<-mp_data_total%>%
+  filter(row_number() %in% train_inds)
+mp_data_validate<-mp_data_total%>%
+  filter(row_number() %in% validate_inds)
+mp_data_test<-mp_data_total%>%
+  filter(row_number() %in% test_inds)
+
+```
+
+
+
+```{r}
+
+mp_data_train_x<-mp_data_train%>%
+  select(-melting_pt)%>%as.matrix()
+mp_data_train_y<-mp_data_train%>%
+  pull(melting_pt)
+
+
+mp_data_validate_x<-mp_data_validate%>%
+  select(-melting_pt)%>%as.matrix()
+mp_data_validate_y<-mp_data_validate%>%
+  pull(melting_pt)
+
+
+mp_data_test_x<-mp_data_test%>%
+  select(-melting_pt)%>%as.matrix()
+mp_data_train_y<-mp_data_test%>%
+  pull(melting_pt)
 
 
 
 
 ```
+
+
+
+
+#### Q3
+
+
 
 
