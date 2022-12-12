@@ -274,8 +274,132 @@ mp_data_validate_y<-mp_data_validate%>%
 
 mp_data_test_x<-mp_data_test%>%
   select(-melting_pt)%>%as.matrix()
-mp_data_train_y<-mp_data_test%>%
+mp_data_test_y<-mp_data_test%>%
   pull(melting_pt)
+
+
+
+
+```
+
+```{r}
+length(mp_data_train_y)
+```
+
+
+
+#### Q3
+
+
+
+```{r}
+
+compute_train_validate_error_ridge<-function(train_x,train_y,validate_x,validate_y,lambda){
+  
+ glmRidge= glmnet(x=train_x,y=train_y,alpha =0, lambda =lambda)
+  
+ train_y_test<-predict(glmRidge,newx = train_x)
+ train_error = mean((train_y - train_y_test)^2)
+ 
+ validate_y_test<-predict(glmRidge,newx = validate_x)
+ validate_error = mean((validate_y-validate_y_test)^2)
+ 
+ 
+ return(list(train_error=train_error,validate_error =validate_error))
+ 
+  
+}
+
+
+```
+
+
+
+
+
+#### Q4
+
+```{r}
+lambda_min = 0.00001
+  
+lambdas = 0.00001*(1.25^seq(1,70, by=1))
+
+
+```
+
+
+
+#### Q5
+
+
+```{r}
+
+ridge_results_df<-data.frame(lambda=lambdas)%>%
+  mutate(out=map(lambda,
+                 ~compute_train_validate_error_ridge(train_x = mp_data_train_x,train_y =mp_data_train_y, validate_x = mp_data_validate_x, validate_y = mp_data_validate_y,lambda = .x)))%>%
+  mutate(train_error = map_dbl(out,~((.x)$train_error)), validate_error =map_dbl(out,~((.x)$validate-error)))%>%
+  select(-out)
+
+```
+
+
+```{r}
+head(ridge_results_df)
+```
+
+
+#### Q6
+
+
+```{r}
+
+p1 <- ggplot(ridge_results_df, aes(lambda, validate_error)) +
+  geom_point()
+
+p1 + scale_x_continuous(breaks = c(1*10^-5,1*10^-4,1*10^-2,1*10^0,1*10^2),
+                        limits = c(1*10^-5, 1*10^2))
+```
+
+
+#### Q7
+
+
+```{r}
+
+
+min_validation_error<-ridge_results_df%>%
+  pull(validate_error)%>%min()
+
+```
+
+```{r}
+
+optimal_lambda<-ridge_results_df%>%
+  filter(validate_error==min_validation_error)%>%
+  pull(lambda)
+
+
+
+```
+
+```{r}
+optimal_lambda
+```
+
+
+```{r}
+final_ridge_model<-glmnet(x = mp_data_train_x,y=mp_data_train_y, alpha = 0, lambda = optimal_lambda)
+```
+
+
+
+```{r}
+
+final_ridge_test_y_est<-predict(final_ridge_model,
+                                newx = mp_data_test_x)
+
+
+final_ridge_test_error = mean((mp_data_test_y-final_ridge_test_y_est)^2)
 
 
 
@@ -284,9 +408,7 @@ mp_data_train_y<-mp_data_test%>%
 
 
 
-
-#### Q3
-
-
-
+```{r}
+final_ridge_test_error
+```
 
