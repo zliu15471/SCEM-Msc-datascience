@@ -215,9 +215,7 @@ mp_data_total<-MP_Descriptors %>%
 dim(mp_data_total)
 ```
 
-```{r}
-head(mp_data_total)
-```
+
 variable numebrs: 893,403
 examples: 4401
 
@@ -335,9 +333,8 @@ lambdas = 0.00001*(1.25^seq(1,70, by=1))
 ```{r}
 
 ridge_results_df<-data.frame(lambda=lambdas)%>%
-  mutate(out=map(lambda,
-                 ~compute_train_validate_error_ridge(train_x = mp_data_train_x,train_y =mp_data_train_y, validate_x = mp_data_validate_x, validate_y = mp_data_validate_y,lambda = .x)))%>%
-  mutate(train_error = map_dbl(out,~((.x)$train_error)), validate_error =map_dbl(out,~((.x)$validate-error)))%>%
+  mutate(out=map(lambda,~compute_train_validate_error_ridge(train_x = mp_data_train_x,train_y =mp_data_train_y, validate_x = mp_data_validate_x, validate_y = mp_data_validate_y,lambda = .x)))%>%
+  mutate(train_error = map_dbl(out,~((.x)$train_error)), validate_error =map_dbl(out,~((.x)$validate_error)))%>%
   select(-out)
 
 ```
@@ -356,8 +353,7 @@ head(ridge_results_df)
 p1 <- ggplot(ridge_results_df, aes(lambda, validate_error)) +
   geom_point()
 
-p1 + scale_x_continuous(breaks = c(1*10^-5,1*10^-4,1*10^-2,1*10^0,1*10^2),
-                        limits = c(1*10^-5, 1*10^2))
+p1 + scale_x_continuous()
 ```
 
 
