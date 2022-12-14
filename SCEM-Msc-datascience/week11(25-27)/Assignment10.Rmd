@@ -216,8 +216,8 @@ dim(mp_data_total)
 ```
 
 
-variable numebrs: 893,403
-examples: 4401
+variable numebrs: 4401
+examples: 203
 
 
 #### Q2
@@ -318,9 +318,9 @@ compute_train_validate_error_ridge<-function(train_x,train_y,validate_x,validate
 #### Q4
 
 ```{r}
-lambda_min = 0.00001
+lambda_min = 1e-5
   
-lambdas = 0.00001*(1.25^seq(1,70, by=1))
+lambdas = lambda_min*(1.25^seq(70))
 
 
 ```
@@ -337,6 +337,7 @@ ridge_results_df<-data.frame(lambda=lambdas)%>%
   mutate(train_error = map_dbl(out,~((.x)$train_error)), validate_error =map_dbl(out,~((.x)$validate_error)))%>%
   select(-out)
 
+
 ```
 
 
@@ -350,10 +351,9 @@ head(ridge_results_df)
 
 ```{r}
 
-p1 <- ggplot(ridge_results_df, aes(lambda, validate_error)) +
-  geom_point()
-
-p1 + scale_x_continuous()
+ridge_results_df%>%
+  ggplot(aes(lambda, validate_error)) +
+  geom_point(size=0.5)+ theme_bw()+ scale_x_continuous(trans='log10') +labs(x='Lambda',y='Validation error')
 ```
 
 
@@ -372,7 +372,7 @@ min_validation_error<-ridge_results_df%>%
 
 optimal_lambda<-ridge_results_df%>%
   filter(validate_error==min_validation_error)%>%
-  pull(lambda)
+  pull(lambda)%>%mean()
 
 
 
@@ -393,18 +393,11 @@ final_ridge_model<-glmnet(x = mp_data_train_x,y=mp_data_train_y, alpha = 0, lamb
 
 final_ridge_test_y_est<-predict(final_ridge_model,
                                 newx = mp_data_test_x)
-
-
 final_ridge_test_error = mean((mp_data_test_y-final_ridge_test_y_est)^2)
-
-
-
-
-
 
 ```
 
-
+ 
 
 ```{r}
 final_ridge_test_error
