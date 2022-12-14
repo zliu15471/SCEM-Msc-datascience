@@ -233,13 +233,18 @@ num_test<-num_total-num_train-num_validate
 ```
 
 ```{r}
-set.seed(123)
+set.seed(1)
 
 test_inds<-sample(seq(num_total),num_test)
 validate_inds<-sample(setdiff(seq(num_total),test_inds),num_validate)
 
 train_inds<-setdiff(seq(num_total),union(validate_inds,test_inds))
 
+```
+
+
+```{r}
+length(test_inds)
 ```
 
 
@@ -254,6 +259,9 @@ mp_data_test<-mp_data_total%>%
 
 ```
 
+```{r}
+dim(mp_data_train)
+```
 
 
 ```{r}
@@ -339,6 +347,10 @@ ridge_results_df<-data.frame(lambda=lambdas)%>%
 
 
 ```
+
+
+
+
 
 
 ```{r}
