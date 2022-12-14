@@ -1,5 +1,5 @@
 ---
-title: "EMATM0061"
+title: "EMATM0061-Coursework"
 author: "Zhen Liu"
 date: "2022-12-14"
 output: html_document
@@ -15,4 +15,221 @@ knitr::opts_chunk$set(echo = TRUE)
 #### A.1
 
 Answer
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+# load the csv file into a dataframe called "data_original"
+
+data_original<-read.csv("finance_data_2022.csv")
+
+
+#check the shape of dataframe
+
+dim(data_original)
+
+```
+
+The number of rows is 1580 and the number of columns is 8.
+
+
+
+#### A.2
+
+Answer
+
+```{r}
+
+#select the columns and rename
+
+finance_data<-data_original%>%
+  select(IFC.Region,IFC.Cumulative.Commitments..US..Thousands.,Country,Loan...Guarantee.participations.Cumulative.Commitments..US..Thousands.,As.of.Date)%>%
+  rename(IFC=IFC.Region,IFC_CC=IFC.Cumulative.Commitments..US..Thousands.,Country=Country, Loan_Guarantee_CC=Loan...Guarantee.participations.Cumulative.Commitments..US..Thousands. ,Date = As.of.Date )
+
+
+
+```
+
+```{r}
+#show the new dataframe 'finance_data' column names
+head(finance_data)
+```
+
+#### A.3
+
+Answer
+
+```{r}
+# filter the dataframe based on conditions
+data_part1<-finance_data%>%
+  filter(IFC_CC>=300000 & Loan_Guarantee_CC<=500000)
+
+```
+
+```{r}
+# sort the IFC_CC in descending order
+data_part1<-data_part1%>%
+  arrange(desc(IFC_CC))
+```
+
+```{r}
+# display the first 4 rows of selected columns
+data_part1%>%
+  select(IFC,IFC_CC,Loan_Guarantee_CC)%>%
+  head(4)
+```
+
+#### A.4
+
+Answer
+
+```{r}
+# add a new column by mutate and map2_dbl 
+
+finance_data<-finance_data%>%
+  mutate(IFC_ratio= map2_dbl(.x = IFC_CC, .y = Loan_Guarantee_CC, ~ (.x/(.x+.y))))  
+
+```
+
+```{r}
+#Display a subset consisting of first 5 rows and 4 columns
+
+finance_data%>%
+  select(IFC,IFC_CC,Loan_Guarantee_CC,IFC_ratio)%>%
+  head(5)
+
+```
+
+
+
+#### A.5
+
+Answer
+
+```{r}
+
+# split the date columns into three individual column day, month, year
+
+# make sure the three columns are numeric type
+
+finance_data<-finance_data%>%
+  separate(Date, into =c('month','day','year'), sep = '/',convert = TRUE)
+
+```
+
+```{r}
+# display the first rows and 4 columns
+
+finance_data%>%
+  select(IFC_CC,day,month,year)%>%
+  head(5)
+
+```
+
+
+#### A.6
+
+Answer
+
+```{r}
+
+# generate a summary data frame and have seven rows and 7 columns
+# the missing values should not be taken into account
+
+summary_data<-finance_data %>%
+  select(IFC,IFC_CC,Loan_Guarantee_CC) %>%
+  group_by(IFC) %>%
+  summarise(ifc_mn=mean(IFC_CC,na.rm=TRUE),
+            ifc_21q=quantile(IFC_CC,probs=0.21,na.rm=TRUE),
+            ifc_var=var(IFC_CC,na.rm = TRUE),
+            lg_mn = mean(Loan_Guarantee_CC,na.rm=TRUE),
+            lg_21q = quantile(Loan_Guarantee_CC,probs=0.21,na.rm=TRUE),
+            lg_var = var(Loan_Guarantee_CC,na.rm = TRUE)) 
+
+```
+
+```{r}
+# display the summary data frame
+summary_data
+```
+
+#### A.7
+
+Answer
+
+
+```{r}
+# creat a plot to display two panels including two countries and cumulative commitments
+# the years are presented by last two digits
+# IFC_CC and Loan_Guarantee_CC should be in the unit of million dollars rather than thousand
+
+
+plot_df<-finance_data%>%
+  select(Country,year,IFC_CC,Loan_Guarantee_CC)%>%
+  filter(Country=='Argentina' | Country=='Brazil')%>%
+  mutate(year = year - round(year, -2),
+        IFC_CC = IFC_CC/1000,
+        Loan_Guarantee_CC = Loan_Guarantee_CC/1000)
+
+```
+
+```{r}
+# Collapses the two names ‘IFC_CC’ and ‘Loan_Guarantee_CC’ into key-value pairs
+
+plot_df<-plot_df%>%
+  select(year,Country,IFC_CC,Loan_Guarantee_CC)%>%
+  gather(key = "names",value = "value", -year ,-Country)
+```
+
+
+```{r}
+# plot the data frame
+ggplot(plot_df,aes(x=year,y=value, color=names)) + geom_point()+
+  facet_wrap(~Country) +
+xlab('year') + ylab('Cumulative Commitments(millions $)') 
+```
+
+#### A.8
+
+Answer
+
+```{r}
+#build up a function to replace NA with 0.9 quantile
+impute_by_quantile<-function(x){
+  qu<-quantile(x,probs=0.9,na.rm=TRUE)
+  
+  impute_f<-function(z){
+    if (is.na(z)){
+      return(qu)
+  }else{
+    return(z)
+  }
+}
+return(map_dbl(x,impute_f))
+}
+
+```
+
+```{r}
+
+# Apply the function to finance_data dataframe
+finance_data<-finance_data%>%
+  mutate(IFC_CC = impute_by_quantile(IFC_CC),
+         Loan_Guarantee_CC = impute_by_quantile(Loan_Guarantee_CC),
+         IFC_ratio = impute_by_quantile(IFC_ratio))
+
+```
+
+```{r}
+#display a dataframe contain 3 columns and one row, it will show the mean value of the 3 columns from finance_data.
+
+summary_finance<-finance_data%>%
+  summarise(IFC_CC = mean(IFC_CC,na.rm=TRUE),
+            Loan_Guarantee_CC = mean(Loan_Guarantee_CC,na.rm=TRUE),
+            IFC_ratio = mean(IFC_ratio,na.rm=TRUE))
+
+summary_finance
+```
 
