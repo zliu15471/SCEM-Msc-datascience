@@ -413,5 +413,6 @@ final_ridge_test_error = mean((mp_data_test_y-final_ridge_test_y_est)^2)
 
 ```{r}
 final_ridge_test_error
+
 ```
 
